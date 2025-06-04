@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,8 +26,8 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: 'hsl(210, 100%, 20%)', // Navy
+					foreground: 'hsl(0, 0%, 100%)'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -41,8 +42,8 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: 'hsl(174, 62%, 47%)', // Teal
+					foreground: 'hsl(0, 0%, 100%)'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -61,6 +62,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				tixapp: {
+					navy: 'hsl(210, 100%, 20%)',
+					'navy-light': 'hsl(210, 100%, 30%)',
+					'navy-dark': 'hsl(210, 100%, 15%)',
+					teal: 'hsl(174, 62%, 47%)',
+					'teal-light': 'hsl(174, 62%, 57%)',
+					'teal-dark': 'hsl(174, 62%, 37%)',
+					gray: 'hsl(220, 13%, 91%)',
+					'gray-dark': 'hsl(220, 13%, 18%)'
 				}
 			},
 			borderRadius: {
@@ -84,11 +95,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out'
+			},
+			minHeight: {
+				'touch-target': '44px'
+			},
+			minWidth: {
+				'touch-target': '44px'
 			}
 		}
 	},

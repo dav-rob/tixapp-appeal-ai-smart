@@ -207,10 +207,12 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                               size="sm"
                               variant={getActionButtonVariant(ticket.workflowStatus)}
                               onClick={(e) => handleActionClick(ticket, e)}
-                              className="text-xs h-12 px-3"
+                              className="text-xs h-12 px-3 w-20 whitespace-normal leading-tight"
                             >
-                              {ticket.actionText}
-                              <ticket.actionIcon className="h-3 w-3 ml-1" />
+                              <span className="flex flex-col items-center">
+                                {ticket.actionText}
+                                <ticket.actionIcon className="h-3 w-3 mt-1" />
+                              </span>
                             </Button>
                           </td>
                           <td className="p-4 text-right">

@@ -171,7 +171,11 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                         <th className="text-left p-4 font-medium text-gray-700">Date Issued</th>
                         <th className="text-center p-4 font-medium text-gray-700">Recommendation</th>
                         <th className="text-left p-4 font-medium text-gray-700">Current Step</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Amount</th>
+                        <th className="text-left p-4 font-medium text-gray-700">
+                          <div className="leading-tight">
+                            Amount<br />Saved
+                          </div>
+                        </th>
                         <th className="text-center p-4 font-medium text-gray-700">Action</th>
                         <th className="text-right p-4 font-medium text-gray-700">View</th>
                       </tr>
@@ -203,7 +207,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                               size="sm"
                               variant={getActionButtonVariant(ticket.workflowStatus)}
                               onClick={(e) => handleActionClick(ticket, e)}
-                              className="text-xs"
+                              className="text-xs h-12 px-3"
                             >
                               {ticket.actionText}
                               <ticket.actionIcon className="h-3 w-3 ml-1" />
@@ -262,7 +266,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <p className="font-medium">{ticket.dateIssued}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Amount</p>
+                      <p className="text-gray-600">Amount Saved</p>
                       <p className="font-semibold text-tixapp-navy">{ticket.amount}</p>
                     </div>
                   </div>

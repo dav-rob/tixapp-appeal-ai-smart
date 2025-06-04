@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Camera } from 'lucide-react';
 import { List } from 'lucide-react';
@@ -7,9 +6,10 @@ import HeroSection from '@/components/HeroSection';
 import CTAButton from '@/components/CTAButton';
 import TicketScanner from '@/components/TicketScanner';
 import TicketDashboard from '@/components/TicketDashboard';
+import TicketDetails from '@/components/TicketDetails';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'scan' | 'dashboard'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'scan' | 'dashboard' | 'details'>('home');
 
   const handleScanTicket = () => {
     console.log('Navigating to scan ticket...');
@@ -19,6 +19,11 @@ const Index = () => {
   const handleViewTickets = () => {
     console.log('Navigating to ticket dashboard...');
     setCurrentView('dashboard');
+  };
+
+  const handleNavigateToDetails = () => {
+    console.log('Navigating to ticket details...');
+    setCurrentView('details');
   };
 
   const handleBackToHome = () => {
@@ -38,7 +43,27 @@ const Index = () => {
             >
               ← Back to Home
             </button>
-            <TicketScanner />
+            <TicketScanner onNavigateToDetails={handleNavigateToDetails} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (currentView === 'details') {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="px-4 py-8">
+          <div className="max-w-screen-xl mx-auto">
+            <button
+              onClick={handleBackToHome}
+              className="mb-6 text-tixapp-teal hover:text-tixapp-teal-dark focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
+              aria-label="Back to home"
+            >
+              ← Back to Home
+            </button>
+            <TicketDetails />
           </div>
         </main>
       </div>

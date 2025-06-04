@@ -1,11 +1,14 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Upload, HelpCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 
-const TicketScanner = () => {
+interface TicketScannerProps {
+  onNavigateToDetails?: () => void;
+}
+
+const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
@@ -56,9 +59,12 @@ const TicketScanner = () => {
         // Convert to blob and process
         canvas.toBlob((blob) => {
           if (blob) {
-            console.log('Image captured, triggering OCR...');
-            // TODO: Process with OCR and navigate to Screen 3 (Ticket Details)
+            console.log('Image captured, processing with OCR...');
             stopCamera();
+            // Navigate to ticket details after OCR processing
+            if (onNavigateToDetails) {
+              onNavigateToDetails();
+            }
           }
         }, 'image/jpeg', 0.9);
       }
@@ -73,7 +79,10 @@ const TicketScanner = () => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         console.log('File selected from gallery:', file.name);
-        // TODO: Process uploaded file with OCR and navigate to Screen 3
+        // Process uploaded file and navigate to ticket details
+        if (onNavigateToDetails) {
+          onNavigateToDetails();
+        }
       }
     };
     input.click();
@@ -164,6 +173,9 @@ const TicketScanner = () => {
           <DialogContent className="max-w-sm mx-auto">
             <DialogHeader>
               <DialogTitle className="text-tixapp-navy">Scanning Tips</DialogTitle>
+              <DialogDescription>
+                Follow these tips for the best scanning results:
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 text-sm text-gray-700">
               <p>• Ensure good lighting on your ticket</p>

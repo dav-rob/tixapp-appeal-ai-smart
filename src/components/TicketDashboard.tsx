@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight, Plus, ArrowRight, RotateCcw } from 'lucide-react';
 
 interface TicketDashboardProps {
   onViewDetails?: () => void;
@@ -15,7 +15,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('date-desc');
 
-  // Mock data for demonstration - expanded with more statuses
+  // Mock data for demonstration - expanded with more statuses and workflow states
   const allTickets = [
     {
       id: '1',
@@ -25,7 +25,11 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       decision: 'Under Review',
       amount: '$125.00',
       dateIssued: '2024-01-15',
-      location: 'Baker Street'
+      location: 'Baker Street',
+      workflowStatus: 'council_info_needed',
+      statusText: 'Council website information needed',
+      actionText: 'Get Council Website Info',
+      actionIcon: ArrowRight
     },
     {
       id: '2',
@@ -35,7 +39,11 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       decision: 'Challenge Recommended',
       amount: '$95.00',
       dateIssued: '2024-01-10',
-      location: 'Oxford Street'
+      location: 'Oxford Street',
+      workflowStatus: 'questionnaire_needed',
+      statusText: 'Driver questionnaire needed',
+      actionText: 'Answer Driver Questions',
+      actionIcon: ArrowRight
     },
     {
       id: '3',
@@ -45,7 +53,11 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       decision: 'Appeal Won',
       amount: '$75.00',
       dateIssued: '2024-01-05',
-      location: 'High Street'
+      location: 'High Street',
+      workflowStatus: 'recommendation_challenge',
+      statusText: 'Appeal Recommendation: Challenge',
+      actionText: 'Re-submit Driver Questions',
+      actionIcon: RotateCcw
     }
   ];
 
@@ -59,6 +71,17 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
         return 'bg-green-100 text-green-800 border-green-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getActionButtonVariant = (workflowStatus: string) => {
+    switch (workflowStatus) {
+      case 'recommendation_challenge':
+        return 'destructive';
+      case 'recommendation_pay':
+        return 'default';
+      default:
+        return 'default';
     }
   };
 
@@ -77,6 +100,12 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
           return 0;
       }
     });
+
+  const handleActionClick = (ticket: any, event: React.MouseEvent) => {
+    event.stopPropagation();
+    console.log(`Action clicked for ticket ${ticket.id}: ${ticket.actionText}`);
+    // Here you would handle the specific action based on workflowStatus
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
@@ -142,17 +171,17 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                         <th className="text-left p-4 font-medium text-gray-700">PCN Reference</th>
                         <th className="text-left p-4 font-medium text-gray-700">Date Issued</th>
                         <th className="text-left p-4 font-medium text-gray-700">Status</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Decision</th>
+                        <th className="text-left p-4 font-medium text-gray-700">Current Step</th>
                         <th className="text-left p-4 font-medium text-gray-700">Amount</th>
-                        <th className="text-right p-4 font-medium text-gray-700">Action</th>
+                        <th className="text-center p-4 font-medium text-gray-700">Action</th>
+                        <th className="text-right p-4 font-medium text-gray-700">View</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredTickets.map((ticket) => (
                         <tr 
                           key={ticket.id} 
-                          className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
-                          onClick={onViewDetails}
+                          className="border-b hover:bg-gray-50 transition-colors"
                         >
                           <td className="p-4">
                             <div>
@@ -166,10 +195,30 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                               {ticket.status}
                             </Badge>
                           </td>
-                          <td className="p-4 text-gray-700">{ticket.decision}</td>
+                          <td className="p-4">
+                            <p className="text-sm text-gray-700">{ticket.statusText}</p>
+                          </td>
                           <td className="p-4 font-semibold text-tixapp-navy">{ticket.amount}</td>
+                          <td className="p-4 text-center">
+                            <Button
+                              size="sm"
+                              variant={getActionButtonVariant(ticket.workflowStatus)}
+                              onClick={(e) => handleActionClick(ticket, e)}
+                              className="text-xs"
+                            >
+                              {ticket.actionText}
+                              <ticket.actionIcon className="h-3 w-3 ml-1" />
+                            </Button>
+                          </td>
                           <td className="p-4 text-right">
-                            <ChevronRight className="h-5 w-5 text-gray-400 ml-auto" />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={onViewDetails}
+                              className="text-gray-400 hover:text-gray-600"
+                            >
+                              <ChevronRight className="h-5 w-5" />
+                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -185,8 +234,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
             {filteredTickets.map((ticket) => (
               <Card 
                 key={ticket.id} 
-                className="hover:shadow-md transition-shadow cursor-pointer"
-                onClick={onViewDetails}
+                className="hover:shadow-md transition-shadow"
               >
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start mb-3">
@@ -198,11 +246,18 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <Badge className={getStatusColor(ticket.status)}>
                         {ticket.status}
                       </Badge>
-                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onViewDetails}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-2 gap-3 text-sm mb-4">
                     <div>
                       <p className="text-gray-600">Date Issued</p>
                       <p className="font-medium">{ticket.dateIssued}</p>
@@ -211,11 +266,22 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <p className="text-gray-600">Amount</p>
                       <p className="font-semibold text-tixapp-navy">{ticket.amount}</p>
                     </div>
-                    <div className="col-span-2">
-                      <p className="text-gray-600">Decision</p>
-                      <p className="font-medium">{ticket.decision}</p>
-                    </div>
                   </div>
+
+                  <div className="mb-3">
+                    <p className="text-gray-600 text-sm">Current Step</p>
+                    <p className="font-medium text-sm">{ticket.statusText}</p>
+                  </div>
+
+                  <Button
+                    size="sm"
+                    variant={getActionButtonVariant(ticket.workflowStatus)}
+                    onClick={(e) => handleActionClick(ticket, e)}
+                    className="w-full"
+                  >
+                    {ticket.actionText}
+                    <ticket.actionIcon className="h-4 w-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
             ))}

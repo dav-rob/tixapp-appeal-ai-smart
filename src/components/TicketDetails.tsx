@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Edit, MapPin, Camera, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Edit, MapPin, Camera, FileText, ChevronDown, ChevronUp, ArrowRight, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,11 @@ const TicketDetails = () => {
   const [responsesSectionOpen, setResponsesSectionOpen] = useState(false);
   const [recommendationSectionOpen, setRecommendationSectionOpen] = useState(false);
   
+  // Status states - these would be determined by the workflow state
+  const [hasCouncilInfo, setHasCouncilInfo] = useState(false);
+  const [hasDriverResponses, setHasDriverResponses] = useState(false);
+  const [hasRecommendation, setHasRecommendation] = useState(true); // For demo purposes
+
   // Mock data - in real app this would come from OCR
   const [pcnData, setPcnData] = useState({
     pcnNumber: 'PCN123456789',
@@ -67,6 +72,37 @@ const TicketDetails = () => {
     ]
   };
 
+  // Determine current status
+  const getCurrentStatus = () => {
+    if (!hasCouncilInfo) {
+      return {
+        text: 'Council website information needed',
+        action: 'Get Council Website Info',
+        icon: ArrowRight,
+        variant: 'default' as const
+      };
+    }
+    if (!hasDriverResponses) {
+      return {
+        text: 'Driver questionnaire needed',
+        action: 'Answer Driver Questions',
+        icon: ArrowRight,
+        variant: 'default' as const
+      };
+    }
+    if (hasRecommendation) {
+      return {
+        text: `Appeal Recommendation: ${recommendation.decision}`,
+        action: 'Re-submit Driver Questions',
+        icon: RotateCcw,
+        variant: recommendation.decision === 'Challenge' ? 'destructive' as const : 'default' as const
+      };
+    }
+    return null;
+  };
+
+  const currentStatus = getCurrentStatus();
+
   const handleEditField = (field: string, value: string) => {
     setPcnData(prev => ({ ...prev, [field]: value }));
     setIsEditing(null);
@@ -79,8 +115,48 @@ const TicketDetails = () => {
     }));
   };
 
+  const handleStatusAction = () => {
+    if (!hasCouncilInfo) {
+      // Navigate to council info collection
+      console.log('Navigate to council info collection');
+      setHasCouncilInfo(true);
+    } else if (!hasDriverResponses) {
+      // Navigate to driver questionnaire
+      console.log('Navigate to driver questionnaire');
+      setHasDriverResponses(true);
+    } else {
+      // Re-submit driver questions
+      console.log('Re-submit driver questions');
+      setHasDriverResponses(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 p-4">
+      {/* Status Section */}
+      {currentStatus && (
+        <Card className="border-2 border-blue-200 bg-blue-50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-blue-900 mb-1">
+                  Current Status
+                </h2>
+                <p className="text-blue-800">{currentStatus.text}</p>
+              </div>
+              <Button
+                onClick={handleStatusAction}
+                variant={currentStatus.variant}
+                className="ml-4"
+              >
+                {currentStatus.action}
+                <currentStatus.icon className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* PCN Ticket Information */}
       <Card>
         <Collapsible open={pcnSectionOpen} onOpenChange={setPcnSectionOpen}>

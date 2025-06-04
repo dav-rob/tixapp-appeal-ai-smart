@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,7 +34,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       id: '2',
       pcnRef: 'PCN987654321',
       ticketNumber: 'NYC-2024-001156',
-      status: 'Advised',
+      status: 'Pending',
       decision: 'Challenge Recommended',
       amount: '$95.00',
       dateIssued: '2024-01-10',
@@ -49,13 +48,13 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       id: '3',
       pcnRef: 'PCN555666777',
       ticketNumber: 'NYC-2024-000998',
-      status: 'Closed',
+      status: 'Challenge',
       decision: 'Appeal Won',
       amount: '$75.00',
       dateIssued: '2024-01-05',
       location: 'High Street',
       workflowStatus: 'recommendation_challenge',
-      statusText: 'Appeal Recommendation: Challenge',
+      statusText: 'Completed',
       actionText: 'Re-submit Driver Questions',
       actionIcon: RotateCcw
     }
@@ -65,8 +64,8 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
     switch (status) {
       case 'Pending':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Advised':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Challenge':
+        return 'bg-red-100 text-red-800 border-red-200';
       case 'Closed':
         return 'bg-green-100 text-green-800 border-green-200';
       default:
@@ -121,7 +120,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Advised">Advised</SelectItem>
+              <SelectItem value="Challenge">Challenge</SelectItem>
               <SelectItem value="Closed">Closed</SelectItem>
             </SelectContent>
           </Select>
@@ -170,7 +169,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <tr>
                         <th className="text-left p-4 font-medium text-gray-700">PCN Reference</th>
                         <th className="text-left p-4 font-medium text-gray-700">Date Issued</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Status</th>
+                        <th className="text-left p-4 font-medium text-gray-700">Recommendation</th>
                         <th className="text-left p-4 font-medium text-gray-700">Current Step</th>
                         <th className="text-left p-4 font-medium text-gray-700">Amount</th>
                         <th className="text-center p-4 font-medium text-gray-700">Action</th>

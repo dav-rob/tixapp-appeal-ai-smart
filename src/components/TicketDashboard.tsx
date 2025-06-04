@@ -1,10 +1,11 @@
 
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronRight, Plus, ArrowRight, RotateCcw } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 
 interface TicketDashboardProps {
   onViewDetails?: () => void;
@@ -28,8 +29,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       location: 'Baker Street',
       workflowStatus: 'council_info_needed',
       statusText: 'Council website information needed',
-      actionText: 'Get Council Website Info',
-      actionIcon: ArrowRight
+      actionText: 'Get Council Website Info'
     },
     {
       id: '2',
@@ -42,8 +42,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       location: 'Oxford Street',
       workflowStatus: 'questionnaire_needed',
       statusText: 'Driver questionnaire needed',
-      actionText: 'Answer Driver Questions',
-      actionIcon: ArrowRight
+      actionText: 'Answer Driver Questions'
     },
     {
       id: '3',
@@ -55,9 +54,21 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       dateIssued: '2024-01-05',
       location: 'High Street',
       workflowStatus: 'recommendation_challenge',
-      statusText: 'Completed',
-      actionText: 'Re-submit Driver Questions',
-      actionIcon: RotateCcw
+      statusText: 'All Completed',
+      actionText: 'Submit Appeal'
+    },
+    {
+      id: '4',
+      pcnRef: 'PCN444555666',
+      ticketNumber: 'NYC-2024-000887',
+      status: 'Pending',
+      decision: 'Pay',
+      amount: '$110.00',
+      dateIssued: '2024-01-03',
+      location: 'Main Street',
+      workflowStatus: 'recommendation_pay',
+      statusText: 'All Completed',
+      actionText: 'Resubmit Questions'
     }
   ];
 
@@ -212,10 +223,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                               onClick={(e) => handleActionClick(ticket, e)}
                               className="text-xs h-12 px-3 w-28 whitespace-normal leading-tight"
                             >
-                              <span className="flex flex-col items-center">
-                                {ticket.actionText}
-                                <ticket.actionIcon className="h-3 w-3 mt-1" />
-                              </span>
+                              {ticket.actionText}
                             </Button>
                           </td>
                           <td className="p-4 text-right">
@@ -288,7 +296,6 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                     className="w-full"
                   >
                     {ticket.actionText}
-                    <ticket.actionIcon className="h-4 w-4 ml-2" />
                   </Button>
                 </CardContent>
               </Card>
@@ -323,3 +330,4 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
 };
 
 export default TicketDashboard;
+

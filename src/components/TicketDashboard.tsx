@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -85,6 +83,13 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
     }
   };
 
+  const getDecisionColor = (decision: string) => {
+    if (decision === 'Pay') {
+      return 'text-red-600 font-semibold';
+    }
+    return 'text-gray-700';
+  };
+
   const getActionButtonVariant = (workflowStatus: string) => {
     switch (workflowStatus) {
       case 'recommendation_challenge':
@@ -94,6 +99,13 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
       default:
         return 'default';
     }
+  };
+
+  const getActionButtonStyle = (workflowStatus: string) => {
+    if (workflowStatus === 'recommendation_pay') {
+      return 'bg-orange-500 hover:bg-orange-600 text-white';
+    }
+    return '';
   };
 
   // Filter and sort tickets
@@ -207,9 +219,9 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                           <td className="p-4 text-gray-700">{ticket.dateIssued}</td>
                           <td className="p-4 text-center">
                             <div className="flex justify-center">
-                              <Badge className={getStatusColor(ticket.status)}>
-                                {ticket.status}
-                              </Badge>
+                              <span className={getDecisionColor(ticket.decision)}>
+                                {ticket.decision}
+                              </span>
                             </div>
                           </td>
                           <td className="p-3">
@@ -221,7 +233,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                               size="sm"
                               variant={getActionButtonVariant(ticket.workflowStatus)}
                               onClick={(e) => handleActionClick(ticket, e)}
-                              className="text-xs h-12 px-3 w-28 whitespace-normal leading-tight"
+                              className={`text-xs h-12 px-3 w-28 whitespace-normal leading-tight ${getActionButtonStyle(ticket.workflowStatus)}`}
                             >
                               {ticket.actionText}
                             </Button>
@@ -259,9 +271,9 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <p className="text-sm text-gray-600">{ticket.location}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(ticket.status)}>
-                        {ticket.status}
-                      </Badge>
+                      <span className={`text-xs font-semibold ${getDecisionColor(ticket.decision)}`}>
+                        {ticket.decision}
+                      </span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -293,7 +305,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                     size="sm"
                     variant={getActionButtonVariant(ticket.workflowStatus)}
                     onClick={(e) => handleActionClick(ticket, e)}
-                    className="w-full"
+                    className={`w-full ${getActionButtonStyle(ticket.workflowStatus)}`}
                   >
                     {ticket.actionText}
                   </Button>
@@ -330,4 +342,3 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
 };
 
 export default TicketDashboard;
-

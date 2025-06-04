@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -107,7 +108,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-tixapp-navy">My Tickets</h2>
         
@@ -164,20 +165,20 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
             <Card>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[900px]">
                     <thead className="bg-gray-50 border-b">
                       <tr>
-                        <th className="text-left p-4 font-medium text-gray-700">PCN Reference</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Date Issued</th>
-                        <th className="text-center p-4 font-medium text-gray-700">Recommendation</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Current Step</th>
-                        <th className="text-left p-4 font-medium text-gray-700">
+                        <th className="text-left p-4 font-medium text-gray-700 w-[20%]">PCN Reference</th>
+                        <th className="text-left p-4 font-medium text-gray-700 w-[12%]">Date Issued</th>
+                        <th className="text-center p-4 font-medium text-gray-700 w-[12%]">Recommendation</th>
+                        <th className="text-left p-3 font-medium text-gray-700 w-[20%]">Current Step</th>
+                        <th className="text-left p-3 font-medium text-gray-700 w-[10%]">
                           <div className="leading-tight">
                             Amount<br />Saved
                           </div>
                         </th>
-                        <th className="text-center p-4 font-medium text-gray-700">Action</th>
-                        <th className="text-right p-4 font-medium text-gray-700">View</th>
+                        <th className="text-center p-4 font-medium text-gray-700 w-[18%]">Action</th>
+                        <th className="text-right p-4 font-medium text-gray-700 w-[8%]">View</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -194,20 +195,22 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                           </td>
                           <td className="p-4 text-gray-700">{ticket.dateIssued}</td>
                           <td className="p-4 text-center">
-                            <Badge className={getStatusColor(ticket.status)}>
-                              {ticket.status}
-                            </Badge>
+                            <div className="flex justify-center">
+                              <Badge className={getStatusColor(ticket.status)}>
+                                {ticket.status}
+                              </Badge>
+                            </div>
                           </td>
-                          <td className="p-4">
+                          <td className="p-3">
                             <p className="text-sm text-gray-700">{ticket.statusText}</p>
                           </td>
-                          <td className="p-4 font-semibold text-tixapp-navy">{ticket.amount}</td>
+                          <td className="p-3 font-semibold text-tixapp-navy">{ticket.amount}</td>
                           <td className="p-4 text-center">
                             <Button
                               size="sm"
                               variant={getActionButtonVariant(ticket.workflowStatus)}
                               onClick={(e) => handleActionClick(ticket, e)}
-                              className="text-xs h-12 px-3 w-20 whitespace-normal leading-tight"
+                              className="text-xs h-12 px-3 w-28 whitespace-normal leading-tight"
                             >
                               <span className="flex flex-col items-center">
                                 {ticket.actionText}

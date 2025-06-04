@@ -72,7 +72,7 @@ const Index = () => {
 
   if (currentView === 'dashboard') {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white pb-20 md:pb-8">
         <Header />
         <main className="px-4 py-8">
           <div className="max-w-screen-xl mx-auto">
@@ -83,7 +83,10 @@ const Index = () => {
             >
               ← Back to Home
             </button>
-            <TicketDashboard />
+            <TicketDashboard 
+              onViewDetails={handleNavigateToDetails}
+              onUploadNew={handleScanTicket}
+            />
           </div>
         </main>
       </div>

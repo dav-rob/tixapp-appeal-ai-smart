@@ -169,7 +169,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                       <tr>
                         <th className="text-left p-4 font-medium text-gray-700">PCN Reference</th>
                         <th className="text-left p-4 font-medium text-gray-700">Date Issued</th>
-                        <th className="text-left p-4 font-medium text-gray-700">Recommendation</th>
+                        <th className="text-center p-4 font-medium text-gray-700">Recommendation</th>
                         <th className="text-left p-4 font-medium text-gray-700">Current Step</th>
                         <th className="text-left p-4 font-medium text-gray-700">Amount</th>
                         <th className="text-center p-4 font-medium text-gray-700">Action</th>
@@ -189,7 +189,7 @@ const TicketDashboard = ({ onViewDetails, onUploadNew }: TicketDashboardProps) =
                             </div>
                           </td>
                           <td className="p-4 text-gray-700">{ticket.dateIssued}</td>
-                          <td className="p-4">
+                          <td className="p-4 text-center">
                             <Badge className={getStatusColor(ticket.status)}>
                               {ticket.status}
                             </Badge>

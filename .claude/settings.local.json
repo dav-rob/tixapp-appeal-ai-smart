@@ -6,7 +6,18 @@
       "Bash(npm install:*)",
       "Bash(npx playwright:*)",
       "Bash(mkdir:*)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "Bash(npx cap:*)",
+      "Bash(npm run build:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun simctl boot:*)",
+      "Bash(open:*)",
+      "Bash(chmod:*)",
+      "Bash(npm run ios:check:*)",
+      "Bash(npm run ios:list:*)",
+      "Bash(npm run ios:*)",
+      "Bash(ls:*)",
+      "Bash(xcrun simctl launch:*)"
     ],
     "deny": []
   }

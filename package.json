@@ -10,9 +10,18 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "ios": "./scripts/ios-build-run.sh",
+    "ios:check": "./scripts/ios-check.sh",
+    "ios:list": "./scripts/ios-build-run.sh --list",
+    "ios:sync": "npx cap sync ios",
+    "ios:open": "npx cap open ios",
+    "ios:redeploy": "./scripts/ios-redeploy.sh"
   },
   "dependencies": {
+    "@capacitor/cli": "^7.3.0",
+    "@capacitor/core": "^7.3.0",
+    "@capacitor/ios": "^7.3.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",

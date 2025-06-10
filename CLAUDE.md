@@ -23,16 +23,22 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 - Tailwind CSS with custom TixApp branding
 
 **Project Structure:**
-- Single-page application with view-based routing handled in `src/pages/Index.tsx`
-- Four main views: home, scan, dashboard, details (state-managed, not URL-routed)
+- Multi-page application with URL-based routing via React Router
+- Four main routes: `/` (home), `/scan`, `/dashboard`, `/details` 
 - Components use shadcn/ui pattern with `@/` path aliases
 - Custom color scheme: tixapp-navy (primary), tixapp-teal (accent), tixapp-gray
 
+**Routing & Navigation:**
+- React Router handles URL-based navigation with routes: `/`, `/scan`, `/dashboard`, `/details`
+- Each view has its own page component in `/pages/`
+- Back navigation uses `useNavigate(-1)` for proper browser history
+- Header TixApp logo and SideNav Home button navigate to `/`
+
 **Key Components:**
-- `Index.tsx` - Main page with view state management
-- `TicketScanner` - Handles ticket upload/photo capture
-- `TicketDashboard` - Lists user's tickets
-- `TicketDetails` - Shows individual ticket information
+- `Index.tsx` - Home page with CTA buttons for scan and dashboard
+- `ScanPage.tsx` - Ticket upload/photo capture page
+- `DashboardPage.tsx` - Lists user's tickets
+- `DetailsPage.tsx` - Shows individual ticket information
 - UI components in `/components/ui/` follow shadcn patterns
 
 **Styling Notes:**

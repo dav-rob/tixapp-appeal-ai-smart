@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Menu, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -7,6 +8,11 @@ import SideNav from './SideNav';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
 
   return (
     <header className="bg-white border-b border-tixapp-gray shadow-sm sticky top-0 z-50">
@@ -30,9 +36,13 @@ const Header = () => {
 
         {/* Logo */}
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-tixapp-navy tracking-tight">
+          <button
+            onClick={handleHomeClick}
+            className="text-2xl font-bold text-tixapp-navy tracking-tight hover:text-tixapp-teal focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
+            aria-label="Go to home page"
+          >
             TixApp
-          </h1>
+          </button>
         </div>
 
         {/* Profile Shortcut */}

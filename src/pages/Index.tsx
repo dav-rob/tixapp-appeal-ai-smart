@@ -1,97 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Camera } from 'lucide-react';
 import { List } from 'lucide-react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CTAButton from '@/components/CTAButton';
-import TicketScanner from '@/components/TicketScanner';
-import TicketDashboard from '@/components/TicketDashboard';
-import TicketDetails from '@/components/TicketDetails';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'scan' | 'dashboard' | 'details'>('home');
+  const navigate = useNavigate();
 
   const handleScanTicket = () => {
     console.log('Navigating to scan ticket...');
-    setCurrentView('scan');
+    navigate('/scan');
   };
 
   const handleViewTickets = () => {
     console.log('Navigating to ticket dashboard...');
-    setCurrentView('dashboard');
+    navigate('/dashboard');
   };
-
-  const handleNavigateToDetails = () => {
-    console.log('Navigating to ticket details...');
-    setCurrentView('details');
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-  };
-
-  if (currentView === 'scan') {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <main className="px-4 py-8">
-          <div className="max-w-screen-xl mx-auto">
-            <button
-              onClick={handleBackToHome}
-              className="mb-6 text-tixapp-teal hover:text-tixapp-teal-dark focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
-              aria-label="Back to home"
-            >
-              ← Back to Home
-            </button>
-            <TicketScanner onNavigateToDetails={handleNavigateToDetails} />
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (currentView === 'details') {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <main className="px-4 py-8">
-          <div className="max-w-screen-xl mx-auto">
-            <button
-              onClick={handleBackToHome}
-              className="mb-6 text-tixapp-teal hover:text-tixapp-teal-dark focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
-              aria-label="Back to home"
-            >
-              ← Back to Home
-            </button>
-            <TicketDetails />
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (currentView === 'dashboard') {
-    return (
-      <div className="min-h-screen bg-white pb-20 md:pb-8">
-        <Header />
-        <main className="px-4 py-8">
-          <div className="max-w-screen-xl mx-auto">
-            <button
-              onClick={handleBackToHome}
-              className="mb-6 text-tixapp-teal hover:text-tixapp-teal-dark focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
-              aria-label="Back to home"
-            >
-              ← Back to Home
-            </button>
-            <TicketDashboard 
-              onViewDetails={handleNavigateToDetails}
-              onUploadNew={handleScanTicket}
-            />
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white">

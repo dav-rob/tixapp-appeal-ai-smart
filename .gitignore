@@ -26,3 +26,15 @@ dist-ssr
 # Playwright
 playwright-report
 test-results
+
+# Capacitor platforms (generated files)
+ios
+android
+
+# Keep empty platform directories
+!ios/.gitkeep
+!android/.gitkeep
+
+# Capacitor config (keep this)
+!capacitor.config.ts
+!capacitor.config.json

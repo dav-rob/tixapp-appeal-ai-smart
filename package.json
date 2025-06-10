@@ -16,9 +16,16 @@
     "ios:list": "./scripts/ios-build-run.sh --list",
     "ios:sync": "npx cap sync ios",
     "ios:open": "npx cap open ios",
-    "ios:redeploy": "./scripts/ios-redeploy.sh"
+    "ios:redeploy": "./scripts/ios-redeploy.sh",
+    "android": "./scripts/android-wrapper.sh",
+    "android:check": "./scripts/android-check.sh",
+    "android:list": "./scripts/android-wrapper.sh --list",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:redeploy": "./scripts/android-redeploy-wrapper.sh"
   },
   "dependencies": {
+    "@capacitor/android": "^7.3.0",
     "@capacitor/cli": "^7.3.0",
     "@capacitor/core": "^7.3.0",
     "@capacitor/ios": "^7.3.0",

@@ -17,7 +17,17 @@
       "Bash(npm run ios:list:*)",
       "Bash(npm run ios:*)",
       "Bash(ls:*)",
-      "Bash(xcrun simctl launch:*)"
+      "Bash(xcrun simctl launch:*)",
+      "Bash(npm run android:check:*)",
+      "Bash(npm run android:*)",
+      "Bash(./gradlew:*)",
+      "Bash(bash:*)",
+      "Bash(adb:*)",
+      "Bash(find:*)",
+      "Bash(emulator:*)",
+      "Bash(touch:*)",
+      "Bash(grep:*)",
+      "Bash(xcrun simctl list:*)"
     ],
     "deny": []
   }

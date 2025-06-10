@@ -177,6 +177,20 @@ build_and_run_ios() {
     cd ../..
 }
 
+# Function to add iOS platform if not exists
+ensure_ios_platform() {
+    if [ ! -d "ios/App" ] || [ ! -f "ios/App/Podfile" ]; then
+        print_status "iOS platform not found or incomplete. Adding iOS platform..."
+        # Try sync first (in case platform is configured but files missing)
+        if npx cap sync ios 2>/dev/null || npx cap add ios; then
+            print_success "iOS platform created successfully"
+        else
+            print_error "Failed to create iOS platform"
+            exit 1
+        fi
+    fi
+}
+
 # Main function
 main() {
     echo "==================================================="
@@ -186,6 +200,9 @@ main() {
     # Check prerequisites
     print_status "Checking prerequisites..."
     check_xcode
+    
+    # Ensure iOS platform exists
+    ensure_ios_platform
     
     # Show available runtimes and simulators
     echo ""

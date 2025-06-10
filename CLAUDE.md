@@ -23,10 +23,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `./scripts/ios-build-run.sh [SIMULATOR_ID]` - Run with specific simulator ID
 - `./scripts/ios-check.sh` - Detailed iOS environment diagnostics
 
+**Android Development:**
+- `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
+- `npm run android:redeploy` - **Quick rebuild and redeploy to running emulator**
+- `npm run android:check` - **Check Android development environment (run this first!)**
+- `npm run android:list` - List all available Android Virtual Devices
+- `npm run android:sync` - Sync Capacitor Android project with latest web build
+- `npm run android:open` - Open Android project in Android Studio
+- `./scripts/android-build-run.sh [AVD_NAME]` - Run with specific AVD
+- `./scripts/android-check.sh` - Comprehensive Android environment diagnostics
+
 **Recommended Development Flow:**
-1. **First time:** `npm run ios` (slow, starts everything)
-2. **Development:** Make React code changes → `npm run ios:redeploy` (fast!)
-3. **Keep simulator running** for best performance
+1. **First time:** `npm run android:check` (verify environment setup)
+2. **Initial build:** `npm run android` (slow, starts emulator + full build)
+3. **Development:** Make React code changes → `npm run android:redeploy` (fast!)
+4. **Keep emulator running** for best performance
 
 ## Architecture
 
@@ -67,10 +78,13 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 
 **Mobile App Development:**
 - iOS app configured with Capacitor 7.3.0 
+- Android app configured with Capacitor 7.3.0
 - Camera permissions configured for ticket scanning
-- iOS project located in `ios/App/App.xcworkspace`
+- Platform directories (`ios/`, `android/`) are auto-generated when needed
+- Scripts automatically run `npx cap add ios/android` if platforms missing
 - Supports iOS 17.4+ and iOS 18.5+ simulators
-- Auto-detects best available iPhone simulator for testing
+- Supports Android API 21+ (Android 5.0+)
+- Auto-detects best available simulators/emulators for testing
 
 **iOS Development Workflow:**
 ```bash
@@ -85,11 +99,42 @@ npm run ios:redeploy          # Build + install + launch
 # Repeat steps 1-2 as needed
 ```
 
+**Android Development Workflow:**
+```bash
+# Environment check (first time setup)
+npm run android:check         # Verify Android development environment
+
+# RECOMMENDED: Manual emulator start for best reliability
+emulator -avd Pixel_7 &       # Or use Android Studio AVD Manager
+
+# Initial setup with pre-started emulator
+npm run android               # Full build + install (auto-loads .bashrc)
+
+# Development cycle (quick redeploy - works great!)
+# 1. Make changes to React code in src/
+# 2. Quick redeploy:
+npm run android:redeploy      # Build + install + launch (auto-loads .bashrc)
+
+# Repeat steps 1-2 as needed (keep emulator running)
+```
+
+**Android Environment Notes:**
+- Scripts automatically load `.bashrc` environment variables (ANDROID_HOME, PATH)
+- Auto-detects Android SDK in common locations if ANDROID_HOME not set
+- Uses `emulator -list-avds` as primary AVD detection method
+- Includes 10-minute timeout for Gradle builds to handle slower machines
+- Wrapper scripts handle interactive bash requirements seamlessly
+- **Best practice:** Start emulator manually first, then use scripts for build/deploy
+- Emulator auto-start works but can timeout during long build processes
+
 **Performance Notes:**
-- First run: ~5+ minutes (simulator startup is slowest part)
-- Redeploy: ~10-15 seconds (simulator already running)
-- Keep simulator running during development for best speed
-- Script auto-detects running simulators and handles installation
+- iOS first run: ~5+ minutes (simulator startup is slowest part)
+- iOS redeploy: ~10-15 seconds (simulator already running)
+- Android first run: varies (emulator startup can be slow, recommend manual start)
+- Android redeploy: ~10-15 seconds (when emulator already running)
+- Keep simulators/emulators running during development for best speed
+- Scripts auto-detect running devices and handle installation
+- Android scripts work perfectly for build/deploy, manual emulator start recommended
 
 **Development Notes:**
 - Lovable.dev integration with component tagging in development mode

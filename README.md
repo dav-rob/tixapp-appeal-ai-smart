@@ -36,6 +36,47 @@ npm i
 npm run dev
 ```
 
+## Mobile App Development
+
+This project supports iOS and Android mobile app development using Capacitor. Platform directories are auto-generated when needed.
+
+### Initial Setup (after cloning)
+
+```sh
+# Install dependencies
+npm install
+
+# For iOS development (macOS only)
+npm run ios
+
+# For Android development  
+npm run android:check  # Check environment first
+npm run android        # Build and run
+```
+
+### Development Workflow
+
+**iOS:**
+```sh
+npm run ios           # Initial build + simulator (5+ min first time)
+npm run ios:redeploy  # Quick redeploy (10-15 sec)
+```
+
+**Android:**
+```sh
+# Recommended: Start emulator manually first
+emulator -avd Pixel_7 &
+
+npm run android           # Full build + install
+npm run android:redeploy  # Quick redeploy (10-15 sec)
+```
+
+### Platform Auto-Generation
+
+- Platform directories (`ios/`, `android/`) are not committed to git
+- Scripts automatically run `npx cap add ios/android` when needed
+- Clean, conflict-free development experience
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).
@@ -55,10 +96,11 @@ npm run dev
 This project is built with:
 
 - Vite
-- TypeScript
+- TypeScript  
 - React
-- shadcn-ui
+- shadcn/ui components
 - Tailwind CSS
+- Capacitor (mobile apps)
 
 ## How can I deploy this project?
 

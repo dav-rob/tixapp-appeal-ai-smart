@@ -10,6 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build:dev` - Build in development mode
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
+- `npm test` - Run Playwright navigation tests
+- `npm run test:ui` - Run Playwright tests with UI
 
 ## Architecture
 

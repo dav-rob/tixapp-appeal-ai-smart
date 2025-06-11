@@ -1,0 +1,3 @@
+[submodule "docutain-example"]
+	path = docutain-example
+	url = https://github.com/Docutain/docutain-sdk-example-capacitor-ionic

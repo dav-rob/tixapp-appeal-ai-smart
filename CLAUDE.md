@@ -23,6 +23,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `./scripts/ios-build-run.sh [SIMULATOR_ID]` - Run with specific simulator ID
 - `./scripts/ios-check.sh` - Detailed iOS environment diagnostics
 
+**iOS Recommended Development Workflow:**
+```sh
+npm run ios           # Initial build + simulator, short time after simulator started
+```
+
 **Android Development:**
 - `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
 - `npm run android:redeploy` - **Quick rebuild and redeploy to running emulator**
@@ -33,11 +38,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `./scripts/android-build-run.sh [AVD_NAME]` - Run with specific AVD
 - `./scripts/android-check.sh` - Comprehensive Android environment diagnostics
 
-**Recommended Development Flow:**
-1. **First time:** `npm run android:check` (verify environment setup)
-2. **Initial build:** `npm run android` (slow, starts emulator + full build)
-3. **Development:** Make React code changes → `npm run android:redeploy` (fast!)
-4. **Keep emulator running** for best performance
+**Android Recommended Development Flow:**
+```sh
+# Recommended: Start emulator manually first
+emulator -avd Pixel_7 &
+
+npm run android           # Full build + install
+npm run android:redeploy  # Quick redeploy (10-15 sec) doesn't rebuild.
+```
 
 ## Architecture
 

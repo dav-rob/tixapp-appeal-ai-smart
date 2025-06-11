@@ -58,8 +58,7 @@ npm run android        # Build and run
 
 **iOS:**
 ```sh
-npm run ios           # Initial build + simulator (5+ min first time)
-npm run ios:redeploy  # Quick redeploy (10-15 sec)
+npm run ios           # Initial build + simulator, short time after simulator started
 ```
 
 **Android:**
@@ -67,8 +66,7 @@ npm run ios:redeploy  # Quick redeploy (10-15 sec)
 # Recommended: Start emulator manually first
 emulator -avd Pixel_7 &
 
-npm run android           # Full build + install
-npm run android:redeploy  # Quick redeploy (10-15 sec)
+npm run android           # Full build + install, short time after emulator started
 ```
 
 ### Platform Auto-Generation

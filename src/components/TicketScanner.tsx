@@ -1,197 +1,203 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, HelpCircle, X } from 'lucide-react';
+import { useState } from 'react';
+import { Camera, Upload, HelpCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { DocutainSDK, Source } from '@docutain/capacitor-plugin-docutain-sdk';
 
 interface TicketScannerProps {
   onNavigateToDetails?: () => void;
 }
 
 const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
-  const [isCameraActive, setIsCameraActive] = useState(false);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const startCamera = async () => {
+  const handleScanDocument = async (source: Source = Source.Camera) => {
+    setIsScanning(true);
+    setError(null);
+    
     try {
-      console.log('Starting camera...');
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment', // Use back camera on mobile
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+      console.log('Starting document scan with source:', source);
+      
+      // Start the document scanner
+      await DocutainSDK.scanDocument({
+        config: {
+          source: source,
+          // Configure scanner options
+          allowCaptureModeSetting: true,
+          pageEditConfig: {
+            allowPageFilter: true,
+            allowPageRotation: true,
+            allowPageArrangement: true,
+            allowPageCropping: true,
+            pageArrangementShowDeleteButton: true,
+            pageArrangementShowPageNumber: true
+          }
         }
       });
-      
-      setStream(mediaStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        setIsCameraActive(true);
-      }
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      // Fallback to file upload if camera fails
-    }
-  };
 
-  const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-      setIsCameraActive(false);
-    }
-  };
+      console.log('Document scan completed successfully');
 
-  const captureImage = () => {
-    if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext('2d');
-      
-      if (context) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0);
+      // Extract text from the scanned document
+      try {
+        const textResult = await DocutainSDK.getText();
+        console.log('Extracted text:', textResult.text);
         
-        // Convert to blob and process
-        canvas.toBlob((blob) => {
-          if (blob) {
-            console.log('Image captured, processing with OCR...');
-            stopCamera();
-            // Navigate to ticket details after OCR processing
-            if (onNavigateToDetails) {
-              onNavigateToDetails();
-            }
-          }
-        }, 'image/jpeg', 0.9);
-      }
-    }
-  };
-
-  const handleUploadFromGallery = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        console.log('File selected from gallery:', file.name);
-        // Process uploaded file and navigate to ticket details
+        // You can also extract structured data if needed
+        const analyzeResult = await DocutainSDK.analyze();
+        console.log('Analyzed data:', analyzeResult.data);
+        
+        // Navigate to details page with the extracted data
+        if (onNavigateToDetails) {
+          onNavigateToDetails();
+        }
+      } catch (extractError) {
+        console.error('Error extracting text from document:', extractError);
+        // Still navigate to details even if text extraction fails
         if (onNavigateToDetails) {
           onNavigateToDetails();
         }
       }
-    };
-    input.click();
+
+    } catch (scanError: unknown) {
+      console.error('Document scan error:', scanError);
+      
+      if ((scanError as { code?: string })?.code === 'CANCELED') {
+        console.log('User canceled the scan');
+        setError('Scan was canceled');
+      } else {
+        setError('Failed to scan document. Please try again.');
+      }
+    } finally {
+      setIsScanning(false);
+    }
   };
 
-  useEffect(() => {
-    // Start camera when component mounts
-    startCamera();
-    
-    // Cleanup when component unmounts
-    return () => {
-      stopCamera();
-    };
-  }, []);
+  const handleCameraScan = () => {
+    handleScanDocument(Source.Camera);
+  };
+
+  const handleGalleryScan = () => {
+    handleScanDocument(Source.Gallery);
+  };
+
+  const handleGalleryMultipleScan = () => {
+    handleScanDocument(Source.GalleryMultiple);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-white">
-      {/* Camera Preview Area - 80% of screen */}
-      <div className="relative flex-1 bg-black overflow-hidden" style={{ height: '80vh' }}>
-        {isCameraActive ? (
-          <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover"
-            />
-            
-            {/* Focus Area Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="border-2 border-white border-dashed rounded-lg w-80 h-60 flex items-center justify-center">
-                <span className="text-white text-sm bg-black/50 px-2 py-1 rounded">
-                  Position ticket within this area
-                </span>
-              </div>
-            </div>
-            
-            {/* Capture Button */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-              <Button
-                onClick={captureImage}
-                className="w-16 h-16 rounded-full bg-white border-4 border-tixapp-navy hover:bg-gray-100 focus:ring-4 focus:ring-white/50"
-                aria-label="Capture ticket image"
-              >
-                <div className="w-8 h-8 rounded-full bg-tixapp-navy"></div>
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-white">
-              <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg mb-2">Starting camera...</p>
-              <p className="text-sm opacity-75">Please allow camera access</p>
-            </div>
-          </div>
-        )}
-        
-        <canvas ref={canvasRef} className="hidden" />
+      {/* Header Section */}
+      <div className="p-4 border-b border-gray-200">
+        <h1 className="text-2xl font-bold text-tixapp-navy text-center">
+          Scan Your Ticket
+        </h1>
+        <p className="text-gray-600 text-center mt-2">
+          Take a photo or upload an image of your parking ticket
+        </p>
       </div>
 
-      {/* Instructions and Controls - 20% of screen */}
-      <div className="p-4 space-y-4 bg-white" style={{ minHeight: '20vh' }}>
-        {/* Upload from Gallery Button */}
-        <Button
-          onClick={handleUploadFromGallery}
-          variant="outline"
-          className="w-full h-12 border-tixapp-teal text-tixapp-teal hover:bg-tixapp-teal hover:text-white focus:ring-2 focus:ring-tixapp-teal"
-          aria-label="Upload ticket from device gallery"
-        >
-          <Upload className="h-5 w-5 mr-2" />
-          Upload from Gallery
-        </Button>
+      {/* Main Content Area */}
+      <div className="flex-1 p-4 space-y-4">
+        
+        {/* Error Alert */}
+        {error && (
+          <Alert className="border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-700">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
 
-        {/* Help with Scanning */}
+        {/* Scanning Instructions */}
+        <Card className="bg-tixapp-gray/10 border-tixapp-teal/20">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-tixapp-navy mb-2">
+              Professional Document Scanning
+            </h3>
+            <p className="text-sm text-gray-700">
+              The advanced scanner will automatically detect your ticket edges, 
+              enhance image quality, and extract text for your appeal.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Scan Options */}
+        <div className="space-y-3">
+          
+          {/* Camera Scan Button */}
+          <Button
+            onClick={handleCameraScan}
+            disabled={isScanning}
+            className="w-full h-14 bg-tixapp-navy hover:bg-tixapp-navy/90 text-white focus:ring-2 focus:ring-tixapp-teal"
+          >
+            <Camera className="h-6 w-6 mr-3" />
+            {isScanning ? 'Scanning...' : 'Scan with Camera'}
+          </Button>
+
+          {/* Gallery Multiple Button */}
+          <Button
+            onClick={handleGalleryMultipleScan}
+            disabled={isScanning}
+            variant="outline"
+            className="w-full h-14 border-tixapp-teal text-tixapp-teal hover:bg-tixapp-teal hover:text-white focus:ring-2 focus:ring-tixapp-teal"
+          >
+            <Upload className="h-5 w-5 mr-2" />
+            Select Multiple Images
+          </Button>
+
+          {/* Gallery Upload Button */}
+          <Button
+            onClick={handleGalleryScan}
+            disabled={isScanning}
+            variant="outline"
+            className="w-full h-12 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-tixapp-teal"
+          >
+            <Upload className="h-5 w-5 mr-2" />
+            Upload from Gallery
+          </Button>
+        </div>
+
+        {/* Help Section */}
         <Dialog open={showHelpDialog} onOpenChange={setShowHelpDialog}>
           <DialogTrigger asChild>
             <Button
               variant="ghost"
               className="w-full text-tixapp-navy hover:bg-tixapp-gray/20 focus:ring-2 focus:ring-tixapp-teal"
-              aria-label="Get help with scanning"
+              disabled={isScanning}
             >
               <HelpCircle className="h-4 w-4 mr-2" />
-              Help with scanning
+              Scanning Tips
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-sm mx-auto">
             <DialogHeader>
               <DialogTitle className="text-tixapp-navy">Scanning Tips</DialogTitle>
               <DialogDescription>
-                Follow these tips for the best scanning results:
+                Get the best results with these professional scanning tips:
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 text-sm text-gray-700">
-              <p>• Ensure good lighting on your ticket</p>
-              <p>• Hold your phone steady while capturing</p>
-              <p>• Make sure all text is clearly visible</p>
-              <p>• Avoid shadows or glare on the ticket</p>
-              <p>• Position the ticket flat and straight</p>
+              <p>• <strong>Automatic Detection:</strong> The scanner will find ticket edges automatically</p>
+              <p>• <strong>Good Lighting:</strong> Ensure your ticket is well-lit</p>
+              <p>• <strong>Steady Hands:</strong> Hold your device steady while scanning</p>
+              <p>• <strong>Clear Text:</strong> Make sure all text is visible and unfolded</p>
+              <p>• <strong>Multiple Images:</strong> Use "Select Multiple Images" for multi-page tickets</p>
+              <p>• <strong>Review & Edit:</strong> You can crop and enhance after scanning</p>
             </div>
           </DialogContent>
         </Dialog>
 
-        {/* Multi-scan Information */}
-        <Card className="bg-tixapp-gray/10 border-tixapp-teal/20">
+        {/* Feature Information */}
+        <Card className="bg-blue-50 border-blue-200">
           <CardContent className="p-3">
-            <p className="text-sm text-gray-700 text-center">
-              <strong>Need to scan more pages?</strong> You can take multiple scans if your ticket is too long.
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Professional Features:</strong> Automatic edge detection, image enhancement, 
+              text recognition, and multi-image support for complete ticket documentation.
             </p>
           </CardContent>
         </Card>

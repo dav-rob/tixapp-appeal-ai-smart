@@ -15,7 +15,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **iOS Development:**
 - `npm run ios` - Build and run app in iOS simulator (auto-selects best device, ~5+ min first time)
-- `npm run ios:redeploy` - **Quick rebuild and redeploy to running simulator (~10-15 sec)**
 - `npm run ios:check` - Check iOS development environment and available simulators
 - `npm run ios:list` - List all available iOS simulators and runtimes
 - `npm run ios:sync` - Sync Capacitor iOS project with latest web build
@@ -30,7 +29,6 @@ npm run ios           # Initial build + simulator, short time after simulator st
 
 **Android Development:**
 - `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
-- `npm run android:redeploy` - **Quick rebuild and redeploy to running emulator**
 - `npm run android:check` - **Check Android development environment (run this first!)**
 - `npm run android:list` - List all available Android Virtual Devices
 - `npm run android:sync` - Sync Capacitor Android project with latest web build
@@ -44,7 +42,6 @@ npm run ios           # Initial build + simulator, short time after simulator st
 emulator -avd Pixel_7 &
 
 npm run android           # Full build + install
-npm run android:redeploy  # Quick redeploy (10-15 sec) doesn't rebuild.
 ```
 
 ## Architecture
@@ -97,14 +94,8 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 **iOS Development Workflow:**
 ```bash
 # Initial setup (once per session - ~5+ minutes)
-npm run ios                    # Starts simulator + full build
+npm run ios                    # Starts simulator + full build, quick after first time
 
-# Development cycle (super fast - ~10-15 seconds)
-# 1. Make changes to React code in src/
-# 2. Quick redeploy:
-npm run ios:redeploy          # Build + install + launch
-
-# Repeat steps 1-2 as needed
 ```
 
 **Android Development Workflow:**

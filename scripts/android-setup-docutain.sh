@@ -68,36 +68,55 @@ print_status "Configuring main build.gradle..."
 
 BUILD_GRADLE="android/build.gradle"
 if [ -f "$BUILD_GRADLE" ]; then
-    # Add Kotlin version and plugin to buildscript
-    if ! grep -q "kotlin_version" "$BUILD_GRADLE"; then
-        print_status "Adding Kotlin configuration to build.gradle..."
-        # Create backup
-        cp "$BUILD_GRADLE" "$BUILD_GRADLE.backup"
-        
-        # Use sed to insert Kotlin configuration
-        sed -i.tmp '/buildscript {/a\
-    ext {\
-        kotlin_version = '\''1.8.10'\''\
-    }' "$BUILD_GRADLE"
-        
-        sed -i.tmp '/classpath.*google-services/a\
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"' "$BUILD_GRADLE"
-        
-        # Add Kotlin JVM target configuration to allprojects
-        sed -i.tmp '/allprojects {/,/}/ {
-            /}/ i\
-    \
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {\
-        kotlinOptions {\
-            jvmTarget = "17"\
-        }\
-    }
-        }' "$BUILD_GRADLE"
-        
-        rm "$BUILD_GRADLE.tmp"
-        print_success "Updated build.gradle with Kotlin configuration"
-    else
+    # Check if already configured
+    if grep -q "kotlin_version" "$BUILD_GRADLE"; then
         print_success "Kotlin configuration already present in build.gradle"
+    else
+        print_status "Adding Kotlin configuration to build.gradle..."
+        
+        # Create completely new build.gradle with proper structure
+        cat > "$BUILD_GRADLE" << 'EOF'
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        kotlin_version = '1.8.10'
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.google.gms:google-services:4.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+EOF
+        
+        print_success "Updated build.gradle with Kotlin configuration"
     fi
 else
     print_error "build.gradle not found at $BUILD_GRADLE"
@@ -131,20 +150,26 @@ print_status "Configuring app/build.gradle..."
 APP_BUILD_GRADLE="android/app/build.gradle"
 if [ -f "$APP_BUILD_GRADLE" ]; then
     if ! grep -q "compileOptions" "$APP_BUILD_GRADLE"; then
-        # Create backup
-        cp "$APP_BUILD_GRADLE" "$APP_BUILD_GRADLE.backup"
+        # Read the original file
+        TEMP_FILE=$(mktemp)
         
-        # Add compileOptions after buildTypes
-        sed -i.tmp '/buildTypes {/,/}/ {
-            /}/a\
-    \
-    compileOptions {\
-        sourceCompatibility JavaVersion.VERSION_17\
-        targetCompatibility JavaVersion.VERSION_17\
-    }
-        }' "$APP_BUILD_GRADLE"
+        # Create new app/build.gradle with compileOptions in the right place
+        awk '
+        /^android {/ { print; in_android=1; next }
+        in_android && /^    buildTypes {/ { 
+            # Add compileOptions before buildTypes
+            print "    compileOptions {"
+            print "        sourceCompatibility JavaVersion.VERSION_17"
+            print "        targetCompatibility JavaVersion.VERSION_17"
+            print "    }"
+            print ""
+            print
+            next
+        }
+        { print }
+        ' "$APP_BUILD_GRADLE" > "$TEMP_FILE"
         
-        rm "$APP_BUILD_GRADLE.tmp"
+        mv "$TEMP_FILE" "$APP_BUILD_GRADLE"
         print_success "Updated app/build.gradle with Java 17 compatibility"
     else
         print_success "Java compatibility already present in app/build.gradle"
@@ -164,9 +189,9 @@ if [ -f "$MANIFEST" ]; then
         print_status "Adding camera permissions..."
         
         # Add permissions before the closing </manifest> tag
-        sed -i.tmp '/<\/manifest>/i\
-    <uses-permission android:name="android.permission.CAMERA" />\
-    <uses-feature android:name="android.hardware.camera" />' "$MANIFEST"
+        sed -i.tmp 's|</manifest>|    <uses-permission android:name="android.permission.CAMERA" />\
+    <uses-feature android:name="android.hardware.camera" />\
+</manifest>|' "$MANIFEST"
         
         rm "$MANIFEST.tmp"
         print_success "Added camera permissions to AndroidManifest.xml"
@@ -177,7 +202,7 @@ if [ -f "$MANIFEST" ]; then
     # Check for largeHeap setting
     if ! grep -q "android:largeHeap" "$MANIFEST"; then
         print_status "Adding largeHeap setting to AndroidManifest.xml..."
-        sed -i.tmp 's/<application/<application android:largeHeap="true"/' "$MANIFEST"
+        sed -i.tmp 's|<application|<application android:largeHeap="true"|' "$MANIFEST"
         rm "$MANIFEST.tmp"
         print_success "Added largeHeap setting to AndroidManifest.xml"
     else

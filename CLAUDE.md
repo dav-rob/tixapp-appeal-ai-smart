@@ -29,6 +29,7 @@ npm run ios           # Initial build + simulator, short time after simulator st
 
 **Android Development:**
 - `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
+- `npm run android:build` - **Build APK for side-loading to real devices (no emulator required)**
 - `npm run android:check` - **Check Android development environment (run this first!)**
 - `npm run android:list` - List all available Android Virtual Devices
 - `npm run android:sync` - Sync Capacitor Android project with latest web build
@@ -38,10 +39,14 @@ npm run ios           # Initial build + simulator, short time after simulator st
 
 **Android Recommended Development Flow:**
 ```sh
+# For Emulator Testing:
 # Recommended: Start emulator manually first
 emulator -avd Pixel_7 &
-
 npm run android           # Full build + install
+
+# For Real Device Testing (Side-loading):
+npm run android:build     # Build APK only, no emulator needed
+# Then transfer APK to device and install
 ```
 
 ## Architecture

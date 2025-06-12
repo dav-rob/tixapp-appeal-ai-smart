@@ -28,7 +28,8 @@
       "Bash(touch:*)",
       "Bash(grep:*)",
       "Bash(xcrun simctl list:*)",
-      "WebFetch(domain:docs.docutain.com)"
+      "WebFetch(domain:docs.docutain.com)",
+      "Bash(java:*)"
     ],
     "deny": []
   }

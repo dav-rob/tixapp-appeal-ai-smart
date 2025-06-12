@@ -30,6 +30,7 @@ npm run ios           # Initial build + simulator, short time after simulator st
 **Android Development:**
 - `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
 - `npm run android:build` - **Build APK for side-loading to real devices (no emulator required)**
+- `npm run android:setup` - **Apply Docutain SDK configuration (automatic in build commands)**
 - `npm run android:check` - **Check Android development environment (run this first!)**
 - `npm run android:list` - List all available Android Virtual Devices
 - `npm run android:sync` - Sync Capacitor Android project with latest web build
@@ -48,6 +49,13 @@ npm run android           # Full build + install
 npm run android:build     # Build APK only, no emulator needed
 # Then transfer APK to device and install
 ```
+
+**Docutain SDK Configuration Management:**
+- The Android platform folder (`android/`) is excluded from git but requires special configuration for Docutain SDK
+- **Automatic Setup:** Build commands automatically apply Docutain configuration when needed
+- **Manual Setup:** Run `npm run android:setup` if you need to apply configuration manually
+- **Fresh Clone Setup:** After `git clone`, just run any build command - configuration is applied automatically
+- **No Git Commits Required:** All Android configuration changes are applied via scripts, not committed files
 
 ## Architecture
 

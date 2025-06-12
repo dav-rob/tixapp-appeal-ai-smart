@@ -18,6 +18,7 @@
     "ios:open": "npx cap open ios",
     "android": "./scripts/android-wrapper.sh",
     "android:build": "./scripts/android-build-wrapper.sh",
+    "android:setup": "./scripts/android-setup-docutain.sh",
     "android:check": "./scripts/android-check.sh",
     "android:list": "./scripts/android-wrapper.sh --list",
     "android:sync": "npx cap sync android",

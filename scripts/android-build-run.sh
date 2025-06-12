@@ -308,6 +308,19 @@ ensure_android_platform() {
             exit 1
         fi
     fi
+    
+    # Check if Docutain configuration is applied
+    if [ -f "android/gradle.properties" ]; then
+        if ! grep -q "android.enableJetifier" "android/gradle.properties"; then
+            print_status "Applying Docutain SDK configuration..."
+            if ./scripts/android-setup-docutain.sh; then
+                print_success "Docutain configuration applied successfully"
+            else
+                print_error "Failed to apply Docutain configuration"
+                exit 1
+            fi
+        fi
+    fi
 }
 
 # Main function

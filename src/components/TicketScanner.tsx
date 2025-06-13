@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { Camera, Upload, HelpCircle, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DocutainSDK, Source } from '@docutain/capacitor-plugin-docutain-sdk';
+import { toast } from '@/components/ui/sonner';
+import { AlertCircle, Camera, HelpCircle, Upload } from 'lucide-react';
+import { useState } from 'react';
 
 interface TicketScannerProps {
   onNavigateToDetails?: () => void;
 }
+
 
 const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
   const [isScanning, setIsScanning] = useState(false);
@@ -46,9 +48,20 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
         const textResult = await DocutainSDK.getText();
         console.log('Extracted text:', textResult.text);
         
-        // You can also extract structured data if needed
-        const analyzeResult = await DocutainSDK.analyze();
-        console.log('Analyzed data:', analyzeResult.data);
+        // Display extracted text in a scrollable toast
+        if (textResult.text) {
+          toast('Text Extraction Complete', {
+            description: (
+              <div className="max-h-96 overflow-y-auto pr-2">
+                <div className="text-sm font-medium mb-2">Extracted Text:</div>
+                <pre className="text-xs whitespace-pre-wrap font-mono bg-gray-50 p-2 rounded border">
+                  {textResult.text}
+                </pre>
+              </div>
+            ),
+            duration: 15000, // 15 seconds to give time to read the raw text
+          });
+        }
         
         // Navigate to details page with the extracted data
         if (onNavigateToDetails) {
@@ -80,9 +93,9 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
     handleScanDocument(Source.Camera);
   };
 
-  const handleGalleryScan = () => {
-    handleScanDocument(Source.Gallery);
-  };
+  // const handleGalleryScan = () => {
+  //   handleScanDocument(Source.Gallery);
+  // };
 
   const handleGalleryMultipleScan = () => {
     handleScanDocument(Source.GalleryMultiple);
@@ -114,7 +127,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
         )}
 
         {/* Scanning Instructions */}
-        <Card className="bg-tixapp-gray/10 border-tixapp-teal/20">
+        {/* <Card className="bg-tixapp-gray/10 border-tixapp-teal/20">
           <CardContent className="p-4">
             <h3 className="font-semibold text-tixapp-navy mb-2">
               Professional Document Scanning
@@ -125,6 +138,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
             </p>
           </CardContent>
         </Card>
+        */}
 
         {/* Scan Options */}
         <div className="space-y-3">
@@ -151,6 +165,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
           </Button>
 
           {/* Gallery Upload Button */}
+          {/*
           <Button
             onClick={handleGalleryScan}
             disabled={isScanning}
@@ -160,6 +175,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
             <Upload className="h-5 w-5 mr-2" />
             Upload from Gallery
           </Button>
+          */}
         </div>
 
         {/* Help Section */}

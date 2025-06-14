@@ -29,7 +29,11 @@
       "Bash(grep:*)",
       "Bash(xcrun simctl list:*)",
       "WebFetch(domain:docs.docutain.com)",
-      "Bash(java:*)"
+      "Bash(java:*)",
+      "Bash(rg:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(cp:*)",
+      "Bash(./scripts/android-setup-docutain.sh:*)"
     ],
     "deny": []
   }

@@ -2,8 +2,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DocutainSDK, Source } from '@docutain/capacitor-plugin-docutain-sdk';
 import { toast } from '@/components/ui/sonner';
+import { DocutainSDK, Source } from '@docutain/capacitor-plugin-docutain-sdk';
 import { AlertCircle, Camera, HelpCircle, Upload } from 'lucide-react';
 import { useState } from 'react';
 
@@ -37,6 +37,13 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
             allowPageCropping: true,
             pageArrangementShowDeleteButton: true,
             pageArrangementShowPageNumber: true
+          },
+          // Customize button appearance
+          buttonConfig: {
+            buttonScanFinish: {
+              title: "DONE",
+              icon: "done_blue_icon"
+            }
           }
         }
       });

@@ -209,7 +209,57 @@ sync_capacitor_android() {
     fi
 }
 
-# Function to build Android app
+# Function to build Android app only (APK for side-loading)
+build_android_app_only() {
+    print_status "Building Android APK for side-loading..."
+    
+    cd android
+    
+    if [ -f "./gradlew" ]; then
+        print_status "Running Gradle build (this may take a few minutes on first build)..."
+        # Use gtimeout if available (macOS with coreutils), otherwise regular timeout
+        local timeout_cmd="timeout"
+        if command -v gtimeout &> /dev/null; then
+            timeout_cmd="gtimeout"
+        elif ! command -v timeout &> /dev/null; then
+            # No timeout available, run without timeout
+            timeout_cmd=""
+        fi
+        
+        if [ -n "$timeout_cmd" ]; then
+            if $timeout_cmd 600 ./gradlew assembleDebug; then
+                print_success "Android APK built successfully"
+            else
+                print_warning "Build may have timed out or failed"
+                # Check if APK was actually created
+                if [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+                    print_success "APK found despite timeout - build appears successful"
+                else
+                    print_error "Failed to build Android APK"
+                    cd ..
+                    exit 1
+                fi
+            fi
+        else
+            # Run without timeout
+            if ./gradlew assembleDebug; then
+                print_success "Android APK built successfully"
+            else
+                print_error "Failed to build Android APK"
+                cd ..
+                exit 1
+            fi
+        fi
+    else
+        print_error "Gradle wrapper not found"
+        cd ..
+        exit 1
+    fi
+    
+    cd ..
+}
+
+# Function to build Android app for emulator
 build_android_app() {
     print_status "Building Android app..."
     
@@ -323,6 +373,75 @@ ensure_android_platform() {
     fi
 }
 
+# Function to show APK location and next steps
+show_build_results() {
+    local apk_path="android/app/build/outputs/apk/debug/app-debug.apk"
+    
+    if [ -f "$apk_path" ]; then
+        echo ""
+        echo "==========================================="
+        echo "           BUILD SUCCESSFUL!"
+        echo "==========================================="
+        echo ""
+        print_success "APK built and ready for side-loading!"
+        echo ""
+        echo "📱 APK Location:"
+        echo "   $(pwd)/$apk_path"
+        echo ""
+        echo "📲 To side-load on your Android device:"
+        echo "   1. Enable 'Developer Options' on your phone"
+        echo "   2. Enable 'USB Debugging' in Developer Options"
+        echo "   3. Connect your phone via USB"
+        echo "   4. Transfer the APK file to your phone"
+        echo "   5. Install the APK using your phone's file manager"
+        echo ""
+        echo "🔧 Alternative: Use ADB to install directly:"
+        echo "   adb install -r $apk_path"
+        echo ""
+        echo "💡 Note: You may need to allow 'Install from Unknown Sources'"
+        echo "   for your file manager or enable 'Install Unknown Apps'"
+        echo ""
+        
+        # Show file size
+        if command -v ls &> /dev/null; then
+            local file_size=$(ls -lh "$apk_path" | awk '{print $5}')
+            echo "📊 APK Size: $file_size"
+        fi
+        
+        echo ""
+    else
+        print_error "APK not found at: $apk_path"
+        print_error "Build may have failed"
+        exit 1
+    fi
+}
+
+# Main function for build only
+main_build_only() {
+    echo "==================================================="
+    echo "        TixApp Android Build-Only Script"
+    echo "        (For Side-loading to Real Devices)"
+    echo "==================================================="
+    
+    # Check prerequisites
+    check_prerequisites
+    
+    # Ensure Android platform exists
+    ensure_android_platform
+    
+    # Build web assets
+    build_web_assets
+    
+    # Sync Capacitor
+    sync_capacitor_android
+    
+    # Build Android app
+    build_android_app_only
+    
+    # Show results and instructions
+    show_build_results
+}
+
 # Main function
 main() {
     echo "==================================================="
@@ -391,17 +510,19 @@ show_help() {
     echo "Usage:"
     echo "  $0                    # Auto-detect and use first available AVD"
     echo "  $0 [AVD_NAME]         # Use specific AVD"
+    echo "  $0 --build-only       # Build APK only (no emulator needed)"
     echo "  $0 --list             # List available AVDs"
     echo "  $0 --help             # Show this help"
     echo ""
     echo "Examples:"
-    echo "  $0                                    # Auto-run"
+    echo "  $0                                    # Auto-run on emulator"
+    echo "  $0 --build-only                       # Build APK for side-loading"
     echo "  $0 'Pixel_7_API_34'                  # Specific AVD"
     echo ""
     echo "Prerequisites:"
     echo "  - Android Studio with SDK installed"
     echo "  - ANDROID_HOME environment variable set"
-    echo "  - At least one Android Virtual Device (AVD) created"
+    echo "  - At least one Android Virtual Device (AVD) created (for emulator mode)"
     echo ""
 }
 
@@ -409,6 +530,10 @@ show_help() {
 case "${1:-}" in
     --help|-h)
         show_help
+        exit 0
+        ;;
+    --build-only)
+        main_build_only
         exit 0
         ;;
     --list|-l)

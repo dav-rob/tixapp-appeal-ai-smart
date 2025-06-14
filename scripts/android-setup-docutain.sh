@@ -221,8 +221,9 @@ ASSETS_DIR="scripts/assets/drawable"
 
 if [ -d "$ASSETS_DIR" ]; then
     if [ -f "$ASSETS_DIR/done-blue-icon.png" ]; then
-        cp "$ASSETS_DIR/done-blue-icon.png" "$DRAWABLE_DIR/"
-        print_success "Copied done-blue-icon.png to drawable folder"
+        # Copy with Android-compatible name (underscores instead of hyphens)
+        cp "$ASSETS_DIR/done-blue-icon.png" "$DRAWABLE_DIR/done_blue_icon.png"
+        print_success "Copied done-blue-icon.png to drawable folder as done_blue_icon.png"
     else
         print_warning "done-blue-icon.png not found in assets folder"
     fi

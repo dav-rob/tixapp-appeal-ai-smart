@@ -41,8 +41,8 @@ fi
 # Copy custom icons to Assets.xcassets
 print_status "Copying custom icons to Assets.xcassets..."
 
-ASSETS_DIR="scripts/assets/ios"
-XCASSETS_DIR="ios/App/App/Assets.xcassets/done-blue-icon.imageset"
+ASSETS_DIR="scripts/assets/drawable"
+XCASSETS_DIR="ios/App/App/Assets.xcassets/done_blue_icon.imageset"
 
 if [ -d "$ASSETS_DIR" ]; then
     # Create imageset directory if it doesn't exist
@@ -78,29 +78,22 @@ if [ -d "$ASSETS_DIR" ]; then
   }
 }
 EOF
-        print_success "Created Contents.json for done-blue-icon imageset"
+        print_success "Created Contents.json for done_blue_icon imageset"
     fi
     
-    # Copy icons if they exist
-    if [ -f "$ASSETS_DIR/done_blue_icon.png" ]; then
-        cp "$ASSETS_DIR/done_blue_icon.png" "$XCASSETS_DIR/"
-        print_success "Copied done_blue_icon.png (1x) to iOS assets"
+    # Copy icons if they exist (using the original filename from assets)
+    if [ -f "$ASSETS_DIR/done-blue-icon.png" ]; then
+        cp "$ASSETS_DIR/done-blue-icon.png" "$XCASSETS_DIR/done_blue_icon.png"
+        print_success "Copied done-blue-icon.png as done_blue_icon.png (1x) to iOS assets"
     else
-        print_warning "done_blue_icon.png not found in $ASSETS_DIR"
+        print_warning "done-blue-icon.png not found in $ASSETS_DIR"
     fi
     
-    if [ -f "$ASSETS_DIR/done_blue_icon@2x.png" ]; then
-        cp "$ASSETS_DIR/done_blue_icon@2x.png" "$XCASSETS_DIR/"
-        print_success "Copied done_blue_icon@2x.png (2x) to iOS assets"
-    else
-        print_warning "done_blue_icon@2x.png not found in $ASSETS_DIR"
-    fi
-    
-    if [ -f "$ASSETS_DIR/done_blue_icon@3x.png" ]; then
-        cp "$ASSETS_DIR/done_blue_icon@3x.png" "$XCASSETS_DIR/"
-        print_success "Copied done_blue_icon@3x.png (3x) to iOS assets"
-    else
-        print_warning "done_blue_icon@3x.png not found in $ASSETS_DIR"
+    # For now, use the same icon for all scales until we generate proper 2x and 3x versions
+    if [ -f "$ASSETS_DIR/done-blue-icon.png" ]; then
+        cp "$ASSETS_DIR/done-blue-icon.png" "$XCASSETS_DIR/done_blue_icon@2x.png"
+        cp "$ASSETS_DIR/done-blue-icon.png" "$XCASSETS_DIR/done_blue_icon@3x.png"
+        print_success "Copied done-blue-icon.png as 2x and 3x variants to iOS assets"
     fi
 else
     print_warning "iOS assets folder not found at $ASSETS_DIR"

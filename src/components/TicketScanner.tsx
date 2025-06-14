@@ -42,7 +42,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
           buttonConfig: {
             buttonScanFinish: {
               title: "DONE",
-              icon: "done-blue-icon"
+              icon: "done_blue_icon"
             }
           }
         }

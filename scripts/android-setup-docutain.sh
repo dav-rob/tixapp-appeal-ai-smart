@@ -220,11 +220,11 @@ DRAWABLE_DIR="android/app/src/main/res/drawable"
 ASSETS_DIR="scripts/assets/drawable"
 
 if [ -d "$ASSETS_DIR" ]; then
-    if [ -f "$ASSETS_DIR/done_blue_icon.png" ]; then
-        cp "$ASSETS_DIR/done_blue_icon.png" "$DRAWABLE_DIR/"
-        print_success "Copied done_blue_icon.png to drawable folder"
+    if [ -f "$ASSETS_DIR/done-blue-icon.png" ]; then
+        cp "$ASSETS_DIR/done-blue-icon.png" "$DRAWABLE_DIR/"
+        print_success "Copied done-blue-icon.png to drawable folder"
     else
-        print_warning "done_blue_icon.png not found in assets folder"
+        print_warning "done-blue-icon.png not found in assets folder"
     fi
 else
     print_warning "Assets folder not found at $ASSETS_DIR"

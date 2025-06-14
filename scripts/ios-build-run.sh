@@ -124,6 +124,26 @@ sync_capacitor() {
     fi
 }
 
+# Function to build iOS app only
+build_ios_only() {
+    print_status "Building iOS app for generic iOS simulator..."
+    
+    # Change to iOS directory
+    cd ios/App
+    
+    # Build the app for generic iOS simulator
+    print_status "Building iOS app..."
+    if xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -destination "generic/platform=iOS Simulator" build; then
+        print_success "iOS app built successfully"
+    else
+        print_error "Failed to build iOS app"
+        cd ../..
+        exit 1
+    fi
+    
+    cd ../..
+}
+
 # Function to build and run iOS app
 build_and_run_ios() {
     local sim_id=$1
@@ -191,7 +211,7 @@ ensure_ios_platform() {
     fi
 }
 
-# Main function
+# Main function for build and run
 main() {
     echo "==================================================="
     echo "          TixApp iOS Build & Run Script"
@@ -203,6 +223,14 @@ main() {
     
     # Ensure iOS platform exists
     ensure_ios_platform
+    
+    # Apply Docutain iOS configuration
+    print_status "Applying Docutain iOS assets configuration..."
+    if ./scripts/ios-setup-docutain.sh; then
+        print_success "iOS assets configuration applied successfully"
+    else
+        print_warning "iOS assets configuration failed, continuing anyway..."
+    fi
     
     # Show available runtimes and simulators
     echo ""
@@ -250,6 +278,46 @@ main() {
     print_status "The TixApp should appear on the simulator screen shortly."
 }
 
+# Main function for build only
+main_build_only() {
+    echo "==================================================="
+    echo "          TixApp iOS Build-Only Script"
+    echo "==================================================="
+    
+    # Check prerequisites
+    print_status "Checking prerequisites..."
+    check_xcode
+    
+    # Ensure iOS platform exists
+    ensure_ios_platform
+    
+    # Apply Docutain iOS configuration
+    print_status "Applying Docutain iOS assets configuration..."
+    if ./scripts/ios-setup-docutain.sh; then
+        print_success "iOS assets configuration applied successfully"
+    else
+        print_warning "iOS assets configuration failed, continuing anyway..."
+    fi
+    
+    # Build web assets
+    build_web_assets
+    
+    # Sync Capacitor
+    sync_capacitor
+    
+    # Build iOS app (no simulator needed)
+    build_ios_only
+    
+    echo ""
+    echo "==========================================="
+    echo "           BUILD SUCCESSFUL!"
+    echo "==========================================="
+    echo ""
+    print_success "iOS app built successfully!"
+    print_status "App bundle created in Xcode DerivedData directory"
+    print_status "You can now open the project in Xcode or run on a simulator manually"
+}
+
 # Help function
 show_help() {
     echo "TixApp iOS Build & Run Script"
@@ -257,11 +325,13 @@ show_help() {
     echo "Usage:"
     echo "  $0                    # Auto-detect and use best available iPhone simulator"
     echo "  $0 [SIMULATOR_ID]     # Use specific simulator ID"
+    echo "  $0 --build-only       # Build app without running simulator"
     echo "  $0 --list             # List available simulators"
     echo "  $0 --help             # Show this help"
     echo ""
     echo "Examples:"
-    echo "  $0                                                    # Auto-run"
+    echo "  $0                                                    # Auto-run on simulator"
+    echo "  $0 --build-only                                       # Build only (no simulator)"
     echo "  $0 3B693B92-C655-44B3-933D-568F1BB41C45             # Specific simulator"
     echo ""
 }
@@ -270,6 +340,10 @@ show_help() {
 case "${1:-}" in
     --help|-h)
         show_help
+        exit 0
+        ;;
+    --build-only)
+        main_build_only
         exit 0
         ;;
     --list|-l)

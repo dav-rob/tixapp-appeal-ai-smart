@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create iOS Blue Done Icons</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        canvas { border: 2px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; font-size: 16px; background: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .icon-set { display: flex; align-items: center; margin: 10px 0; }
+        .icon-set canvas { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <h2>iOS Blue Done Icon Generator</h2>
+    <p>This will create iOS icons in multiple scales: 1x (48px), 2x (96px), 3x (144px)</p>
+    
+    <div class="icon-set">
+        <canvas id="canvas1x" width="48" height="48"></canvas>
+        <span>1x (48x48px)</span>
+        <button onclick="downloadIcon('1x', 48)">Download 1x</button>
+    </div>
+    
+    <div class="icon-set">
+        <canvas id="canvas2x" width="96" height="96"></canvas>
+        <span>2x (96x96px)</span>
+        <button onclick="downloadIcon('2x', 96)">Download 2x</button>
+    </div>
+    
+    <div class="icon-set">
+        <canvas id="canvas3x" width="144" height="144"></canvas>
+        <span>3x (144x144px)</span>
+        <button onclick="downloadIcon('3x', 144)">Download 3x</button>
+    </div>
+    
+    <br>
+    <button onclick="downloadAll()" style="background: #28a745; font-weight: bold;">Download All Three Icons</button>
+    
+    <script>
+        function drawIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Scale factors for drawing
+            const center = size / 2;
+            const radius = (size * 0.92) / 2; // 92% of canvas size
+            const strokeWidth = size * 0.08; // 8% of canvas size
+            
+            // Draw blue circle background
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#007BFF';
+            ctx.fill();
+            
+            // Draw white checkmark
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = strokeWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            // Scale checkmark proportionally
+            const checkStartX = center - (size * 0.19);
+            const checkStartY = center;
+            const checkMidX = center - (size * 0.06);
+            const checkMidY = center + (size * 0.125);
+            const checkEndX = center + (size * 0.19);
+            const checkEndY = center - (size * 0.125);
+            
+            ctx.moveTo(checkStartX, checkStartY);
+            ctx.lineTo(checkMidX, checkMidY);
+            ctx.lineTo(checkEndX, checkEndY);
+            ctx.stroke();
+        }
+        
+        function downloadIcon(scale, size) {
+            const canvas = document.getElementById('canvas' + scale);
+            const link = document.createElement('a');
+            const filename = scale === '1x' ? 'done_blue_icon.png' : `done_blue_icon@${scale}.png`;
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function downloadAll() {
+            setTimeout(() => downloadIcon('1x', 48), 100);
+            setTimeout(() => downloadIcon('2x', 96), 200);
+            setTimeout(() => downloadIcon('3x', 144), 300);
+            alert('All icons downloaded! Please save them to: ios/App/App/Assets.xcassets/done-blue-icon.imageset/');
+        }
+        
+        // Draw all icons when page loads
+        window.onload = function() {
+            drawIcon('canvas1x', 48);
+            drawIcon('canvas2x', 96);
+            drawIcon('canvas3x', 144);
+            console.log('iOS icons drawn successfully');
+        };
+    </script>
+</body>
+</html>

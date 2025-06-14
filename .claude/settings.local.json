@@ -33,7 +33,8 @@
       "Bash(rg:*)",
       "mcp__ide__getDiagnostics",
       "Bash(cp:*)",
-      "Bash(./scripts/android-setup-docutain.sh:*)"
+      "Bash(./scripts/android-setup-docutain.sh:*)",
+      "Bash(./scripts/ios-setup-docutain.sh:*)"
     ],
     "deny": []
   }

@@ -38,3 +38,6 @@ android
 # Capacitor config (keep this)
 !capacitor.config.ts
 !capacitor.config.json
+
+# secrets
+.env

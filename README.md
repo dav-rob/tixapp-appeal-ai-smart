@@ -64,14 +64,4 @@ This project is built with:
 - Tailwind CSS
 - Capacitor (mobile apps)
 
-## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/5213ea60-14d7-49f4-96fb-f75d61394ded) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

@@ -29,7 +29,9 @@
       "Bash(grep:*)",
       "Bash(xcrun simctl list:*)",
       "WebFetch(domain:docs.docutain.com)",
-      "Bash(java:*)"
+      "Bash(java:*)",
+      "Bash(xcode-select:*)",
+      "Bash(sudo xcode-select:*)"
     ],
     "deny": []
   }

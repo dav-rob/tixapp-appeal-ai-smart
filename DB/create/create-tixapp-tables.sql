@@ -1,5 +1,5 @@
 -- Drop tables if they already exist
-DROP TABLE IF EXISTS documents, pictures, car, driver_info, council_info, "user" CASCADE;
+DROP TABLE IF EXISTS documents, pictures, car, driver_info, ticket_info, "user" CASCADE;
 
 -- USER Table
 CREATE TABLE "user" (
@@ -14,8 +14,8 @@ CREATE TABLE "user" (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
--- COUNCIL_INFO Table
-CREATE TABLE council_info (
+-- TICKET_INFO Table
+CREATE TABLE ticket_info (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     pcn_number TEXT NOT NULL,
     contravention_code TEXT,
@@ -32,6 +32,7 @@ CREATE TABLE council_info (
     car_make TEXT,
     car_model TEXT,
     car_colour TEXT,
+    ticket_category TEXT CHECK (ticket_category IN ('council', 'private', 'police', 'toll', 'other')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -39,7 +40,7 @@ CREATE TABLE council_info (
 CREATE TABLE driver_info (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES "user"(id) ON DELETE SET NULL,
-    council_info_id UUID UNIQUE REFERENCES council_info(id) ON DELETE CASCADE,
+    ticket_info_id UUID UNIQUE REFERENCES ticket_info(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -56,7 +57,7 @@ CREATE TABLE car (
 -- PICTURES Table
 CREATE TABLE pictures (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    council_info_id UUID REFERENCES council_info(id) ON DELETE CASCADE,
+    ticket_info_id UUID REFERENCES ticket_info(id) ON DELETE CASCADE,
     driver_info_id UUID REFERENCES driver_info(id) ON DELETE CASCADE,
     pic BYTEA NOT NULL, -- Binary data for images
     title TEXT,
@@ -67,7 +68,7 @@ CREATE TABLE pictures (
 -- DOCUMENTS Table
 CREATE TABLE documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    council_info_id UUID REFERENCES council_info(id) ON DELETE CASCADE,
+    ticket_info_id UUID REFERENCES ticket_info(id) ON DELETE CASCADE,
     driver_info_id UUID REFERENCES driver_info(id) ON DELETE CASCADE,
     doc BYTEA, -- Optional binary file data
     format TEXT CHECK (format IN ('pdf', 'docx', 'txt', 'csv', 'xlsx')), -- Limit to known formats

@@ -13,6 +13,7 @@
     "test:ui": "playwright test --ui",
     "ios": "./scripts/ios-build-run.sh",
     "ios:build": "./scripts/ios-build-run.sh --build-only",
+    "ios:pre-build": "./scripts/ios-build-run.sh --pre-build",
     "ios:check": "./scripts/ios-check.sh",
     "ios:list": "./scripts/ios-build-run.sh --list",
     "ios:sync": "npx cap sync ios",

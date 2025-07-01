@@ -15,6 +15,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **iOS Development:**
 - `npm run ios` - Build and run app in iOS simulator (auto-selects best device, ~5+ min first time)
+- `npm run ios:build` - Build iOS app without running simulator (build-only mode)
+- `npm run ios:pre-build` - **Prepare project for Xcode manual build (web assets + sync + pod install)**
 - `npm run ios:check` - Check iOS development environment and available simulators
 - `npm run ios:list` - List all available iOS simulators and runtimes
 - `npm run ios:sync` - Sync Capacitor iOS project with latest web build
@@ -106,8 +108,12 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 
 **iOS Development Workflow:**
 ```bash
-# Initial setup (once per session - ~5+ minutes)
-npm run ios                    # Starts simulator + full build, quick after first time
+# For Simulator Testing:
+npm run ios                    # Full build + simulator launch (~5+ min first time)
+
+# For Device Testing (Manual Xcode Build):
+npm run ios:pre-build          # Prepare project for Xcode (web assets + sync + pod install)
+npx cap open ios               # Open in Xcode, then build/deploy to device manually
 
 ```
 

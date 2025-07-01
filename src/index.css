@@ -98,4 +98,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Android safe area support */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    .capacitor-android body {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
+
+  /* iOS safe area support */
+  @supports (padding-top: constant(safe-area-inset-top)) {
+    .capacitor-ios body {
+      padding-top: constant(safe-area-inset-top);
+    }
+  }
 }

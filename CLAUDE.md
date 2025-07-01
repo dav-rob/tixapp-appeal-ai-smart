@@ -105,6 +105,7 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 - Supports iOS 17.4+ and iOS 18.5+ simulators
 - Supports Android API 21+ (Android 5.0+)
 - Auto-detects best available simulators/emulators for testing
+- **Native Header Implementation:** Hybrid solution using native-optimized touch handling with React-based popups
 
 **iOS Development Workflow:**
 ```bash
@@ -159,3 +160,32 @@ npm run android:redeploy      # Build + install + launch (auto-loads .bashrc)
 - Project uses npm (has both package-lock.json and bun.lockb, prefer npm)
 - ESLint configured with React hooks and TypeScript rules
 - Playwright tests verify navigation functionality works correctly
+
+## Native Header Implementation
+
+**Problem Solved:** Android header buttons (hamburger menu, title, profile) had poor touch responsiveness and status bar overlap issues.
+
+**Solution Components:**
+- `src/components/NativeButton.tsx` - Touch-optimized button component for mobile platforms
+- `src/hooks/useNativeHeader.ts` - React hook for native platform detection and status bar configuration
+- `src/components/Header.tsx` - Updated to use hybrid native/web approach
+- `src/index.css` - Added CSS safe area support for Android/iOS status bars
+- `capacitor.config.ts` - Enhanced Android touch capture and status bar configuration
+
+**Key Features:**
+- **Platform Detection:** Automatically uses native-optimized buttons on iOS/Android, falls back to web buttons on desktop
+- **Touch Responsiveness:** Uses `onTouchStart/End` events for immediate response on mobile
+- **Status Bar Support:** Proper safe area handling prevents header overlap with system UI
+- **Visual Feedback:** Immediate press animations and state management
+- **No Custom Native Code:** Pure web solution using Capacitor's standard APIs
+
+**Plugins Added:**
+- `@capacitor/app@7.0.1` - App lifecycle and back button handling
+- `@capacitor/status-bar@7.0.1` - Native status bar styling and configuration
+- `@capacitor/action-sheet@7.0.1` - Future native menu options
+
+**Implementation Notes:**
+- Web-based solution requires no native Swift/Kotlin code
+- Platform directories (`ios/`, `android/`) remain auto-generated
+- All customizations are in committed TypeScript/CSS files
+- Solution is fully portable across development environments

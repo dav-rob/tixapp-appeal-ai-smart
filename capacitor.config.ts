@@ -7,18 +7,30 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https'
   },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
+  },
   ios: {
-    contentInset: 'automatic'
+    contentInset: 'automatic',
+    scrollEnabled: false,
+    allowsLinkPreview: false,
+    webviewUIDelegate: true
   },
   plugins: {
     StatusBar: {
       style: 'dark',
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      overlay: false
     },
     SplashScreen: {
       launchShowDuration: 2000,
       backgroundColor: '#ffffff',
       showSpinner: false
+    },
+    App: {
+      handleBackButton: true
     }
   }
 };

@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Menu, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, User } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SideNav from './SideNav';
 
 const Header = () => {
@@ -41,7 +41,7 @@ const Header = () => {
             className="text-2xl font-bold text-tixapp-navy tracking-tight hover:text-tixapp-teal focus:outline-none focus:ring-2 focus:ring-tixapp-teal focus:ring-offset-2 rounded px-2 py-1"
             aria-label="Go to home page"
           >
-            TixApp
+            Tix Appeal
           </button>
         </div>
 

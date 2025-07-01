@@ -34,7 +34,9 @@
       "mcp__ide__getDiagnostics",
       "Bash(cp:*)",
       "Bash(./scripts/android-setup-docutain.sh:*)",
-      "Bash(./scripts/ios-setup-docutain.sh:*)"
+      "Bash(./scripts/ios-setup-docutain.sh:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

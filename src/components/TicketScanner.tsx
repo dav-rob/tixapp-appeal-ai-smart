@@ -71,15 +71,15 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
         }
         
         // Navigate to details page with the extracted data
-        if (onNavigateToDetails) {
-          onNavigateToDetails();
-        }
+        // if (onNavigateToDetails) {
+        //   onNavigateToDetails();
+        // }
       } catch (extractError) {
         console.error('Error extracting text from document:', extractError);
         // Still navigate to details even if text extraction fails
-        if (onNavigateToDetails) {
-          onNavigateToDetails();
-        }
+        // if (onNavigateToDetails) {
+        //   onNavigateToDetails();
+        // }
       }
 
     } catch (scanError: unknown) {

@@ -189,3 +189,108 @@ npm run android:redeploy      # Build + install + launch (auto-loads .bashrc)
 - Platform directories (`ios/`, `android/`) remain auto-generated
 - All customizations are in committed TypeScript/CSS files
 - Solution is fully portable across development environments
+
+## Android Testing & Debugging Workflow
+
+**Standard procedure for testing Android changes with comprehensive logging:**
+
+```bash
+# 1. Start logging session (captures all Android logs)
+./scripts/start-android-logging.sh
+
+# 2. Build and deploy APK to connected device
+npm run android:build
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+
+# 3. Test the app functionality on device
+# (Perform scanning, API calls, modal interactions, etc.)
+
+# 4. Stop logging and analyze results
+./scripts/stop-android-logging.sh
+
+# 5. Analyze logs for specific issues
+grep -E 'Console.*TixApp|extract_ticket|CapacitorHttp|ERROR' logs/android/full-[TIMESTAMP].log
+```
+
+**Key Analysis Commands:**
+- `grep 'extract_ticket' logs/android/full-[TIMESTAMP].log` - Find API calls
+- `grep -A 20 'Capacitor/Console.*TixApp' logs/android/full-[TIMESTAMP].log` - Find app console logs
+- `grep 'formatTicketDataForDisplay\|Setting ticket data\|Opening modal' logs/android/full-[TIMESTAMP].log` - Find modal data flow
+
+**Important Notes:**
+- DO NOT use `tail -f` during testing - analyze logs after testing is complete
+- Logs capture all console.log, API calls, and system events
+- Each logging session creates timestamped files in `logs/android/`
+- This workflow provides systematic debugging for mobile-specific issues
+
+## Structured Logging with AppLogger
+
+**AppLogger Class (`src/utils/logger.ts`)** provides consistent, structured logging across the application with proper JSON serialization for complex objects.
+
+**Import and Usage:**
+```typescript
+import { AppLogger } from '@/utils/logger';
+
+// In any component or service
+```
+
+**Available Methods:**
+
+**General Logging:**
+```typescript
+AppLogger.debug('ComponentName', 'Debug message', optionalData);
+AppLogger.info('ComponentName', 'Info message', optionalData);
+AppLogger.warn('ComponentName', 'Warning message', optionalData);
+AppLogger.error('ComponentName', 'Error message', errorObject);
+```
+
+**Specialized Logging:**
+```typescript
+// API calls - tracks request/response
+AppLogger.api('TicketScanner', 'extract_ticket', requestData, responseData);
+
+// Modal operations
+AppLogger.modal('TicketModal', 'Opening modal with API data', modalData);
+AppLogger.modal('TicketModal', 'useEffect triggered', { itemCount: data.length });
+
+// State changes - tracks before/after values
+AppLogger.state('TicketScanner', 'Setting ticket data', oldState, newState);
+AppLogger.state('TicketModal', 'Updating modal data', currentData, newData);
+```
+
+**Examples from Components:**
+```typescript
+// TicketScanner.tsx
+const apiResponse = await ticketExtractionService.extractTicketData(text);
+AppLogger.api('TicketScanner', 'extract_ticket', { ocrTextLength: text.length }, apiResponse);
+
+const formattedData = ticketExtractionService.formatTicketDataForDisplay(apiResponse);
+AppLogger.state('TicketScanner', 'Formatted data for modal', undefined, {
+  formattedDataLength: formattedData.length,
+  fields: formattedData.map(f => ({ key: f.key, hasValue: !!f.value }))
+});
+
+// TicketModal.tsx
+useEffect(() => {
+  AppLogger.modal('TicketModal', `useEffect triggered - initialTicketData: ${initialTicketData?.length || 0} items`);
+  
+  if (initialTicketData && initialTicketData.length > 0) {
+    AppLogger.state('TicketModal', 'Updating modal with new API data', 
+      { currentLength: ticketData.length }, 
+      { newLength: initialTicketData.length, fields: initialTicketData.map(f => f.key) }
+    );
+    setTicketData(initialTicketData);
+  }
+}, [initialTicketData]);
+```
+
+**Benefits:**
+- **Structured Format:** `[LEVEL][TIMESTAMP][CONTEXT] message`
+- **Safe Serialization:** Handles circular references and complex objects
+- **Searchable Logs:** Easy to grep for specific components or operations
+- **Consistent Timestamps:** ISO format for precise timing analysis
+- **Context Aware:** Component/service name helps track data flow
+
+## Development Guidelines
+
+**When looking up Capacitor functionality, always search the context7 mcp "capacitorjs_com-docs" first.**

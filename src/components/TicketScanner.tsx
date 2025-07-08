@@ -2,20 +2,32 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { toast } from '@/components/ui/sonner';
 import { DocutainSDK, Source } from '@docutain/capacitor-plugin-docutain-sdk';
 import { AlertCircle, Camera, HelpCircle, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import TicketModal from '@/components/TicketModal';
 
-interface TicketScannerProps {
-  onNavigateToDetails?: () => void;
+import { ticketExtractionService } from '@/services/ticketExtractionService';
+import { AppLogger } from '@/utils/logger';
+
+interface TicketField {
+  key: string;
+  label: string;
+  value: string | number | null;
+  type: 'text' | 'number' | 'datetime' | 'currency';
+  editable: boolean;
 }
 
-
-const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
+const TicketScanner = () => {
+  const navigate = useNavigate();
   const [isScanning, setIsScanning] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTicketModal, setShowTicketModal] = useState(false);
+  const [extractedText, setExtractedText] = useState<string>('');
+  const [ticketData, setTicketData] = useState<TicketField[]>([]);
+  const [isProcessingData, setIsProcessingData] = useState(false);
 
   const handleScanDocument = async (source: Source = Source.Camera) => {
     setIsScanning(true);
@@ -55,19 +67,42 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
         const textResult = await DocutainSDK.getText();
         console.log('Extracted text:', textResult.text);
         
-        // Display extracted text in a scrollable toast
+        // Extract and process ticket data
         if (textResult.text) {
-          toast('Text Extraction Complete', {
-            description: (
-              <div className="max-h-96 overflow-y-auto pr-2">
-                <div className="text-sm font-medium mb-2">Extracted Text:</div>
-                <pre className="text-xs whitespace-pre-wrap font-mono bg-gray-50 p-2 rounded border">
-                  {textResult.text}
-                </pre>
-              </div>
-            ),
-            duration: 15000, // 15 seconds to give time to read the raw text
-          });
+          setExtractedText(textResult.text);
+          
+          // Call API to extract structured ticket data
+          try {
+            setIsProcessingData(true);
+            AppLogger.info('TicketScanner', 'Starting API processing for extracted text');
+            
+            const apiResponse = await ticketExtractionService.extractTicketData(textResult.text);
+            AppLogger.api('TicketScanner', 'extract_ticket', { ocrTextLength: textResult.text.length }, apiResponse);
+            
+            const formattedData = ticketExtractionService.formatTicketDataForDisplay(apiResponse);
+            AppLogger.state('TicketScanner', 'Formatted data for modal', undefined, {
+              formattedDataLength: formattedData.length,
+              fields: formattedData.map(f => ({ key: f.key, label: f.label, hasValue: !!f.value }))
+            });
+            
+            AppLogger.state('TicketScanner', 'Setting ticket data state', ticketData.length, formattedData.length);
+            setTicketData(formattedData);
+            
+            AppLogger.modal('TicketScanner', 'Opening modal with API data');
+            setShowTicketModal(true);
+            
+          } catch (apiError) {
+            AppLogger.error('TicketScanner', 'API processing failed', apiError);
+            
+            // Show modal anyway with placeholder data and raw text
+            AppLogger.modal('TicketScanner', 'Opening modal with fallback data due to API error');
+            setTicketData([]);
+            setShowTicketModal(true);
+            
+            setError(`Failed to process ticket data: ${apiError instanceof Error ? apiError.message : 'Unknown error'}`);
+          } finally {
+            setIsProcessingData(false);
+          }
         }
         
         // Navigate to details page with the extracted data
@@ -108,6 +143,28 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
     handleScanDocument(Source.GalleryMultiple);
   };
 
+  const handleModalSave = (data: Record<string, unknown>) => {
+    console.log('Saving ticket data:', data);
+    setShowTicketModal(false);
+  };
+
+  const handleModalEdit = () => {
+    console.log('Editing ticket');
+  };
+
+  const handleModalDelete = () => {
+    console.log('Deleting ticket');
+    setShowTicketModal(false);
+  };
+
+  const handleModalClose = () => {
+    setShowTicketModal(false);
+  };
+
+  const handleNavigateToDetails = () => {
+    navigate('/details');
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header Section */}
@@ -133,6 +190,16 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
           </Alert>
         )}
 
+        {/* Processing Alert */}
+        {isProcessingData && (
+          <Alert className="border-blue-200 bg-blue-50">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+            <AlertDescription className="text-blue-700">
+              Processing ticket data with AI...
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Scanning Instructions */}
         {/* <Card className="bg-tixapp-gray/10 border-tixapp-teal/20">
           <CardContent className="p-4">
@@ -153,29 +220,29 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
           {/* Camera Scan Button */}
           <Button
             onClick={handleCameraScan}
-            disabled={isScanning}
+            disabled={isScanning || isProcessingData}
             className="w-full h-14 bg-tixapp-navy hover:bg-tixapp-navy/90 text-white focus:ring-2 focus:ring-tixapp-teal"
           >
             <Camera className="h-6 w-6 mr-3" />
-            {isScanning ? 'Scanning...' : 'Scan with Camera'}
+{isScanning || isProcessingData ? (isProcessingData ? 'Processing...' : 'Scanning...') : 'Scan with Camera'}
           </Button>
 
           {/* Gallery Multiple Button */}
           <Button
             onClick={handleGalleryMultipleScan}
-            disabled={isScanning}
+            disabled={isScanning || isProcessingData}
             variant="outline"
             className="w-full h-14 border-tixapp-teal text-tixapp-teal hover:bg-tixapp-teal hover:text-white focus:ring-2 focus:ring-tixapp-teal"
           >
             <Upload className="h-5 w-5 mr-2" />
-            Select Multiple Images
+{isScanning || isProcessingData ? (isProcessingData ? 'Processing...' : 'Scanning...') : 'Select Multiple Images'}
           </Button>
 
           {/* Gallery Upload Button */}
           {/*
           <Button
             onClick={handleGalleryScan}
-            disabled={isScanning}
+            disabled={isScanning || isProcessingData}
             variant="outline"
             className="w-full h-12 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-tixapp-teal"
           >
@@ -191,7 +258,7 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
             <Button
               variant="ghost"
               className="w-full text-tixapp-navy hover:bg-tixapp-gray/20 focus:ring-2 focus:ring-tixapp-teal"
-              disabled={isScanning}
+              disabled={isScanning || isProcessingData}
             >
               <HelpCircle className="h-4 w-4 mr-2" />
               Scanning Tips
@@ -225,6 +292,18 @@ const TicketScanner = ({ onNavigateToDetails }: TicketScannerProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Professional Ticket Modal */}
+      <TicketModal
+        isOpen={showTicketModal}
+        onClose={handleModalClose}
+        onSave={handleModalSave}
+        onEdit={handleModalEdit}
+        onDelete={handleModalDelete}
+        extractedText={extractedText}
+        onNavigateToDetails={handleNavigateToDetails}
+        ticketData={ticketData}
+      />
     </div>
   );
 };

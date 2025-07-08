@@ -10,6 +10,7 @@ import ScanPage from "./pages/ScanPage";
 import DashboardPage from "./pages/DashboardPage";
 import DetailsPage from "./pages/DetailsPage";
 import NotFound from "./pages/NotFound";
+import ServiceTest from "./components/ServiceTest";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/scan" element={<ScanPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/details" element={<DetailsPage />} />
+            <Route path="/test" element={<ServiceTest />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -7,9 +7,6 @@ import TicketScanner from '@/components/TicketScanner';
 const ScanPage = () => {
   const navigate = useNavigate();
 
-  const handleNavigateToDetails = () => {
-    navigate('/details');
-  };
 
   const handleBack = () => {
     navigate(-1);
@@ -28,7 +25,7 @@ const ScanPage = () => {
             <ArrowLeft className="w-4 h-4" />
             Back
           </button>
-          <TicketScanner onNavigateToDetails={handleNavigateToDetails} />
+          <TicketScanner />
         </div>
       </main>
     </div>

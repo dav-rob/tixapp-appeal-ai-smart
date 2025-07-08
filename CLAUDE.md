@@ -195,15 +195,21 @@ npm run android:redeploy      # Build + install + launch (auto-loads .bashrc)
 **Standard procedure for testing Android changes with comprehensive logging:**
 
 ```bash
-# 1. Start logging session (captures all Android logs)
-./scripts/start-android-logging.sh
+# 1. Start logging session in background (automatically continues)
+./scripts/start-android-logging.sh &
+# Script runs in background, Claude proceeds immediately to build
 
-# 2. Build and deploy APK to connected device
+# 2a. Build APK (Claude reports completion)
 npm run android:build
+# ✅ Claude confirms: "BUILD COMPLETE! APK ready for installation."
+
+# 2b. Install APK to device (Claude reports completion)  
 adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+# ✅ Claude confirms: "INSTALL COMPLETE! Launch the app on your device."
 
 # 3. Test the app functionality on device
 # (Perform scanning, API calls, modal interactions, etc.)
+# User performs testing and reports results
 
 # 4. Stop logging and analyze results
 ./scripts/stop-android-logging.sh

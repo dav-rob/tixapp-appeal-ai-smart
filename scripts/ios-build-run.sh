@@ -144,6 +144,26 @@ build_ios_only() {
     cd ../..
 }
 
+# Function to build iOS app for device
+build_ios_device() {
+    print_status "Building iOS app for physical device..."
+    
+    # Change to iOS directory
+    cd ios/App
+    
+    # Build the app for generic iOS device
+    print_status "Building iOS app for device..."
+    if xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -destination "generic/platform=iOS" build; then
+        print_success "iOS app built successfully for device"
+    else
+        print_error "Failed to build iOS app for device"
+        cd ../..
+        exit 1
+    fi
+    
+    cd ../..
+}
+
 # Function to build and run iOS app
 build_and_run_ios() {
     local sim_id=$1
@@ -318,6 +338,46 @@ main_build_only() {
     print_status "You can now open the project in Xcode or run on a simulator manually"
 }
 
+# Main function for device build
+main_build_device() {
+    echo "==================================================="
+    echo "          TixApp iOS Device Build Script"
+    echo "==================================================="
+    
+    # Check prerequisites
+    print_status "Checking prerequisites..."
+    check_xcode
+    
+    # Ensure iOS platform exists
+    ensure_ios_platform
+    
+    # Apply Docutain iOS configuration
+    print_status "Applying Docutain iOS assets configuration..."
+    if ./scripts/ios-setup-docutain.sh; then
+        print_success "iOS assets configuration applied successfully"
+    else
+        print_warning "iOS assets configuration failed, continuing anyway..."
+    fi
+    
+    # Build web assets
+    build_web_assets
+    
+    # Sync Capacitor
+    sync_capacitor
+    
+    # Build iOS app for device
+    build_ios_device
+    
+    echo ""
+    echo "==========================================="
+    echo "         DEVICE BUILD SUCCESSFUL!"
+    echo "==========================================="
+    echo ""
+    print_success "iOS app built successfully for device!"
+    print_status "App bundle created for deployment to physical devices"
+    print_status "Ready for deployment with: npm run ios:device"
+}
+
 # Main function for pre-build (prepare for Xcode manual build)
 main_pre_build() {
     echo "==================================================="
@@ -378,6 +438,7 @@ show_help() {
     echo "  $0                    # Auto-detect and use best available iPhone simulator"
     echo "  $0 [SIMULATOR_ID]     # Use specific simulator ID"
     echo "  $0 --build-only       # Build app without running simulator"
+    echo "  $0 --build-device     # Build app for physical device deployment"
     echo "  $0 --pre-build        # Prepare project for Xcode manual build (web assets + sync + pod install)"
     echo "  $0 --list             # List available simulators"
     echo "  $0 --help             # Show this help"
@@ -385,6 +446,7 @@ show_help() {
     echo "Examples:"
     echo "  $0                                                    # Auto-run on simulator"
     echo "  $0 --build-only                                       # Build only (no simulator)"
+    echo "  $0 --build-device                                     # Build for physical device"
     echo "  $0 --pre-build                                        # Prepare for Xcode manual build"
     echo "  $0 3B693B92-C655-44B3-933D-568F1BB41C45             # Specific simulator"
     echo ""
@@ -398,6 +460,10 @@ case "${1:-}" in
         ;;
     --build-only)
         main_build_only
+        exit 0
+        ;;
+    --build-device)
+        main_build_device
         exit 0
         ;;
     --pre-build)

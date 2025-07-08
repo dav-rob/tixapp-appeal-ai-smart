@@ -15,7 +15,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **iOS Development:**
 - `npm run ios` - Build and run app in iOS simulator (auto-selects best device, ~5+ min first time)
-- `npm run ios:build` - Build iOS app without running simulator (build-only mode)
+- `npm run ios:build` - Build iOS app for simulator (build-only mode)
+- `npm run ios:build-device` - **Build iOS app for physical device deployment**
+- `npm run ios:device` - **Deploy iOS app to connected physical device**
 - `npm run ios:pre-build` - **Prepare project for Xcode manual build (web assets + sync + pod install)**
 - `npm run ios:check` - Check iOS development environment and available simulators
 - `npm run ios:list` - List all available iOS simulators and runtimes
@@ -26,7 +28,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **iOS Recommended Development Workflow:**
 ```sh
+# For Simulator Testing:
 npm run ios           # Initial build + simulator, short time after simulator started
+
+# For Physical Device Testing:
+npm run ios:build-device && npm run ios:device    # Build + deploy to device
+# Then use Safari Web Inspector for debugging
 ```
 
 **Android Development:**
@@ -112,11 +119,44 @@ This is a React-based parking ticket appeal application built with modern TypeSc
 # For Simulator Testing:
 npm run ios                    # Full build + simulator launch (~5+ min first time)
 
+# For Device Testing (Command Line):
+npm run ios:build-device       # Build for physical device (generic/platform=iOS)
+npm run ios:device             # Deploy to connected device (or manual deployment)
+
 # For Device Testing (Manual Xcode Build):
 npm run ios:pre-build          # Prepare project for Xcode (web assets + sync + pod install)
 npx cap open ios               # Open in Xcode, then build/deploy to device manually
 
 ```
+
+**iOS Device Testing & Debugging Workflow:**
+
+```bash
+# 1. Build for device (not simulator)
+npm run ios:build-device
+
+# 2a. Deploy via script (may have devicectl issues)
+npm run ios:device
+
+# 2b. Manual deployment (reliable fallback)
+ios-deploy --bundle "/Users/.../Library/Developer/Xcode/DerivedData/.../Debug-iphoneos/App.app" --debug --no-wifi --timeout 60
+
+# 3. Debug using Safari Web Inspector
+# - Enable Web Inspector on iPad: Settings → Safari → Advanced → Web Inspector ON
+# - Enable Develop menu on Mac: Safari → Preferences → Advanced → Show Develop menu
+# - Connect iPad, open TixApp, then Safari → Develop → David's iPad → TixApp
+# - Copy console logs to logs/ios/safari-console-logs.log for analysis
+
+# 4. Test app functionality and analyze logs
+# Safari Web Inspector shows all JavaScript console.log, API calls, and errors in real-time
+```
+
+**iOS Development Notes:**
+- **Device vs Simulator**: Always use `npm run ios:build-device` for physical device deployment
+- **Deployment**: Manual `ios-deploy` is more reliable than devicectl for now
+- **Debugging**: Safari Web Inspector is the standard tool for iOS Capacitor app debugging
+- **Logging**: JavaScript logs don't appear in system console - use Safari Web Inspector
+- devicectl logging issues are common with iOS 17+ - Safari Web Inspector is preferred method
 
 **Android Development Workflow:**
 ```bash

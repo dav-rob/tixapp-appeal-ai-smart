@@ -20,6 +20,7 @@
     "ios:sync": "npx cap sync ios",
     "ios:open": "npx cap open ios",
     "ios:device": "./scripts/ios-device-deploy.sh",
+    "ios:device-deploy": "./scripts/ios-device-deploy-manual.sh",
     "android": "./scripts/android-wrapper.sh",
     "android:build": "./scripts/android-build-run.sh --build-only",
     "android:setup": "./scripts/android-setup-docutain.sh",

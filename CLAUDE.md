@@ -18,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run ios:build` - Build iOS app for simulator (build-only mode)
 - `npm run ios:build-device` - **Build iOS app for physical device deployment**
 - `npm run ios:device` - **Deploy iOS app to connected physical device**
+- `npm run ios:device-deploy` - **Manual device deployment (reliable ios-deploy method)**
 - `npm run ios:pre-build` - **Prepare project for Xcode manual build (web assets + sync + pod install)**
 - `npm run ios:check` - Check iOS development environment and available simulators
 - `npm run ios:list` - List all available iOS simulators and runtimes
@@ -32,7 +33,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run ios           # Initial build + simulator, short time after simulator started
 
 # For Physical Device Testing:
-npm run ios:build-device && npm run ios:device    # Build + deploy to device
+npm run ios:build-device && npm run ios:device-deploy    # Build + deploy to device
 # Then use Safari Web Inspector for debugging
 ```
 
@@ -139,7 +140,7 @@ npm run ios:build-device
 npm run ios:device
 
 # 2b. Manual deployment (reliable fallback)
-ios-deploy --bundle "/Users/.../Library/Developer/Xcode/DerivedData/.../Debug-iphoneos/App.app" --debug --no-wifi --timeout 60
+npm run ios:device-deploy
 
 # 3. Debug using Safari Web Inspector
 # - Enable Web Inspector on iPad: Settings → Safari → Advanced → Web Inspector ON
@@ -153,7 +154,9 @@ ios-deploy --bundle "/Users/.../Library/Developer/Xcode/DerivedData/.../Debug-ip
 
 **iOS Development Notes:**
 - **Device vs Simulator**: Always use `npm run ios:build-device` for physical device deployment
-- **Deployment**: Manual `ios-deploy` is more reliable than devicectl for now
+- **Deployment Options**: 
+  - `npm run ios:device` - Full deployment script (may have devicectl issues on iOS 17+)
+  - `npm run ios:device-deploy` - Reliable manual deployment using ios-deploy (recommended)
 - **Debugging**: Safari Web Inspector is the standard tool for iOS Capacitor app debugging
 - **Logging**: JavaScript logs don't appear in system console - use Safari Web Inspector
 - devicectl logging issues are common with iOS 17+ - Safari Web Inspector is preferred method

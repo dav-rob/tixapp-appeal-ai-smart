@@ -239,7 +239,7 @@ adb logcat -v threadtime | grep -E "(GC|Memory|Performance)"
 grep -n "ERROR" logs/android-*.log
 
 # API call analysis
-grep -A5 -B5 "extract_ticket" logs/android-*.log
+grep -A5 -B5 "extract-ticket" logs/android-*.log
 
 # React component debugging
 grep "Modal\|Scanner\|API Response" logs/android-*.log

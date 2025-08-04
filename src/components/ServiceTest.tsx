@@ -30,7 +30,7 @@ const ServiceTest: React.FC = () => {
 
     try {
       console.log('Testing API directly...');
-      const apiUrl = import.meta.env.DEV ? '/api/extract_ticket' : 'https://api.tixappeal.com/extract_ticket';
+      const apiUrl = import.meta.env.DEV ? '/api/extract-ticket' : 'https://api.tixappeal.com/extract-ticket';
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -66,11 +66,11 @@ const ServiceTest: React.FC = () => {
           <p className="text-sm text-gray-600 mt-2">
             {import.meta.env.DEV ? (
               <>
-                Development mode: Using proxy <code className="bg-gray-100 px-2 py-1 rounded">/api/extract_ticket</code> → <code className="bg-gray-100 px-2 py-1 rounded">https://api.tixappeal.com/extract_ticket</code>
+                Development mode: Using proxy <code className="bg-gray-100 px-2 py-1 rounded">/api/extract-ticket</code> → <code className="bg-gray-100 px-2 py-1 rounded">https://api.tixappeal.com/extract-ticket</code>
               </>
             ) : (
               <>
-                Production mode: <code className="bg-gray-100 px-2 py-1 rounded">https://api.tixappeal.com/extract_ticket</code>
+                Production mode: <code className="bg-gray-100 px-2 py-1 rounded">https://api.tixappeal.com/extract-ticket</code>
               </>
             )}
           </p>

@@ -91,7 +91,7 @@ analyze_logs() {
         print_status "TixApp-related lines: $tixapp_lines"
         
         # API call analysis
-        local api_calls=$(grep -c "extract_ticket\|CapacitorHttp" "$latest_full_log" 2>/dev/null || echo "0")
+        local api_calls=$(grep -c "extract-ticket\|CapacitorHttp" "$latest_full_log" 2>/dev/null || echo "0")
         print_status "API-related lines: $api_calls"
         
         # Error analysis
@@ -101,7 +101,7 @@ analyze_logs() {
         echo ""
         print_status "Quick analysis commands:"
         echo "  - View TixApp logs: grep 'TixApp' '$latest_full_log'"
-        echo "  - View API calls: grep 'extract_ticket\\|CapacitorHttp' '$latest_full_log'"
+        echo "  - View API calls: grep 'extract-ticket\\|CapacitorHttp' '$latest_full_log'"
         echo "  - View errors: grep -i 'error\\|exception' '$latest_full_log'"
         echo "  - View console logs: grep 'Console' '$latest_full_log'"
         echo ""

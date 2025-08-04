@@ -62,13 +62,13 @@ class TicketExtractionService {
     
     // Use proxy only for web development, not mobile apps
     if (isDev && !isCapacitor) {
-      console.log('Using development proxy: /api/extract_ticket');
-      return '/api/extract_ticket';
+      console.log('Using development proxy: /api/extract-ticket');
+      return '/api/extract-ticket';
     }
     
     // Use direct API URL for production or mobile apps
-    console.log('Using direct API URL: https://api.tixappeal.com/extract_ticket');
-    return 'https://api.tixappeal.com/extract_ticket';
+    console.log('Using direct API URL: https://api.tixappeal.com/extract-ticket');
+    return 'https://api.tixappeal.com/extract-ticket';
   }
 
   /**

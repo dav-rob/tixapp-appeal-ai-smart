@@ -77,7 +77,7 @@ const TicketScanner = () => {
             AppLogger.info('TicketScanner', 'Starting API processing for extracted text');
             
             const apiResponse = await ticketExtractionService.extractTicketData(textResult.text);
-            AppLogger.api('TicketScanner', 'extract_ticket', { ocrTextLength: textResult.text.length }, apiResponse);
+            AppLogger.api('TicketScanner', 'extract-ticket', { ocrTextLength: textResult.text.length }, apiResponse);
             
             const formattedData = ticketExtractionService.formatTicketDataForDisplay(apiResponse);
             AppLogger.state('TicketScanner', 'Formatted data for modal', undefined, {

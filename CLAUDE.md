@@ -266,11 +266,11 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 ./scripts/stop-android-logging.sh
 
 # 5. Analyze logs for specific issues
-grep -E 'Console.*TixApp|extract_ticket|CapacitorHttp|ERROR' logs/android/full-[TIMESTAMP].log
+grep -E 'Console.*TixApp|extract-ticket|CapacitorHttp|ERROR' logs/android/full-[TIMESTAMP].log
 ```
 
 **Key Analysis Commands:**
-- `grep 'extract_ticket' logs/android/full-[TIMESTAMP].log` - Find API calls
+- `grep 'extract-ticket' logs/android/full-[TIMESTAMP].log` - Find API calls
 - `grep -A 20 'Capacitor/Console.*TixApp' logs/android/full-[TIMESTAMP].log` - Find app console logs
 - `grep 'formatTicketDataForDisplay\|Setting ticket data\|Opening modal' logs/android/full-[TIMESTAMP].log` - Find modal data flow
 
@@ -304,7 +304,7 @@ AppLogger.error('ComponentName', 'Error message', errorObject);
 **Specialized Logging:**
 ```typescript
 // API calls - tracks request/response
-AppLogger.api('TicketScanner', 'extract_ticket', requestData, responseData);
+AppLogger.api('TicketScanner', 'extract-ticket', requestData, responseData);
 
 // Modal operations
 AppLogger.modal('TicketModal', 'Opening modal with API data', modalData);
@@ -319,7 +319,7 @@ AppLogger.state('TicketModal', 'Updating modal data', currentData, newData);
 ```typescript
 // TicketScanner.tsx
 const apiResponse = await ticketExtractionService.extractTicketData(text);
-AppLogger.api('TicketScanner', 'extract_ticket', { ocrTextLength: text.length }, apiResponse);
+AppLogger.api('TicketScanner', 'extract-ticket', { ocrTextLength: text.length }, apiResponse);
 
 const formattedData = ticketExtractionService.formatTicketDataForDisplay(apiResponse);
 AppLogger.state('TicketScanner', 'Formatted data for modal', undefined, {

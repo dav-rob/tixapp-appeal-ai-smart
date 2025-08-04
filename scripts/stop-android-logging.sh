@@ -40,7 +40,7 @@ if [ -f "$LATEST_LOG" ]; then
     # Quick analysis
     echo "🔍 Quick Analysis:"
     TIXAPP_LOGS=$(grep -c "TixApp\|Console" "$LATEST_LOG" 2>/dev/null || echo "0")
-    API_LOGS=$(grep -c "extract_ticket\|CapacitorHttp" "$LATEST_LOG" 2>/dev/null || echo "0") 
+    API_LOGS=$(grep -c "extract-ticket\|CapacitorHttp" "$LATEST_LOG" 2>/dev/null || echo "0") 
     ERROR_LOGS=$(grep -c "ERROR\|Error" "$LATEST_LOG" 2>/dev/null || echo "0")
     
     echo "   • TixApp related logs: $TIXAPP_LOGS"
@@ -53,7 +53,7 @@ if [ -f "$LATEST_LOG" ]; then
     echo "   grep -E '(TixApp|Console)' \"$LATEST_LOG\""
     echo ""
     echo "   # View API logs only"
-    echo "   grep -E '(extract_ticket|CapacitorHttp)' \"$LATEST_LOG\""
+    echo "   grep -E '(extract-ticket|CapacitorHttp)' \"$LATEST_LOG\""
     echo ""
     echo "   # View errors only"
     echo "   grep -E '(ERROR|Error)' \"$LATEST_LOG\""

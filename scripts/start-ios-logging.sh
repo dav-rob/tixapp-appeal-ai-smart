@@ -149,7 +149,7 @@ main() {
     echo "  - Full logs: tail -f $LOG_DIR/full-$TIMESTAMP.log"
     echo "  - TixApp logs: tail -f $LOG_DIR/tixapp-$TIMESTAMP.log"
     echo "  - Search logs: grep 'TixApp' $LOG_DIR/full-$TIMESTAMP.log"
-    echo "  - API calls: grep 'extract_ticket' $LOG_DIR/full-$TIMESTAMP.log"
+    echo "  - API calls: grep 'extract-ticket' $LOG_DIR/full-$TIMESTAMP.log"
     echo ""
 }
 

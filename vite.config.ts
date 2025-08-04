@@ -10,11 +10,11 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       // Proxy API requests to bypass CORS during development
-      '/api/extract_ticket': {
+      '/api/extract-ticket': {
         target: 'https://api.tixappeal.com',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api\/extract-ticket/, '/extract-ticket'),
       },
     },
   },

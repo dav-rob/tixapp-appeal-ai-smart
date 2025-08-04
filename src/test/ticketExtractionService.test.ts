@@ -1,6 +1,6 @@
 /**
  * Test for Ticket Extraction Service
- * Tests API connectivity and response parsing for https://api.tixappeal.com/extract_ticket
+ * Tests API connectivity and response parsing for https://api.tixappeal.com/extract-ticket
  */
 
 import { ticketExtractionService } from '@/services/ticketExtractionService';

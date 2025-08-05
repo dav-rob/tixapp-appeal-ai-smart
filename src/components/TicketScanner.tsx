@@ -40,15 +40,17 @@ const TicketScanner = () => {
       await DocutainSDK.scanDocument({
         config: {
           source: source,
+          // Configure for single page document capture
+          multiPage: false,
           // Configure scanner options
           allowCaptureModeSetting: true,
           pageEditConfig: {
             allowPageFilter: true,
             allowPageRotation: true,
-            allowPageArrangement: true,
+            allowPageArrangement: false,  // No need for arrangement with single page
             allowPageCropping: true,
-            pageArrangementShowDeleteButton: true,
-            pageArrangementShowPageNumber: true
+            pageArrangementShowDeleteButton: false,  // No delete button needed for single page
+            pageArrangementShowPageNumber: false     // No page numbers for single page
           },
           // Customize button appearance
           buttonConfig: {
@@ -135,12 +137,8 @@ const TicketScanner = () => {
     handleScanDocument(Source.Camera);
   };
 
-  // const handleGalleryScan = () => {
-  //   handleScanDocument(Source.Gallery);
-  // };
-
-  const handleGalleryMultipleScan = () => {
-    handleScanDocument(Source.GalleryMultiple);
+  const handleGalleryScan = () => {
+    handleScanDocument(Source.Gallery);
   };
 
   const handleModalSave = (data: Record<string, unknown>) => {
@@ -227,15 +225,15 @@ const TicketScanner = () => {
 {isScanning || isProcessingData ? (isProcessingData ? 'Processing...' : 'Scanning...') : 'Scan with Camera'}
           </Button>
 
-          {/* Gallery Multiple Button */}
+          {/* Gallery Upload Button */}
           <Button
-            onClick={handleGalleryMultipleScan}
+            onClick={handleGalleryScan}
             disabled={isScanning || isProcessingData}
             variant="outline"
             className="w-full h-14 border-tixapp-teal text-tixapp-teal hover:bg-tixapp-teal hover:text-white focus:ring-2 focus:ring-tixapp-teal"
           >
             <Upload className="h-5 w-5 mr-2" />
-{isScanning || isProcessingData ? (isProcessingData ? 'Processing...' : 'Scanning...') : 'Select Multiple Images'}
+{isScanning || isProcessingData ? (isProcessingData ? 'Processing...' : 'Scanning...') : 'Upload from Gallery'}
           </Button>
 
           {/* Gallery Upload Button */}
@@ -276,7 +274,7 @@ const TicketScanner = () => {
               <p>• <strong>Good Lighting:</strong> Ensure your ticket is well-lit</p>
               <p>• <strong>Steady Hands:</strong> Hold your device steady while scanning</p>
               <p>• <strong>Clear Text:</strong> Make sure all text is visible and unfolded</p>
-              <p>• <strong>Multiple Images:</strong> Use "Select Multiple Images" for multi-page tickets</p>
+              <p>• <strong>Quick Capture:</strong> Take one photo and the preview appears immediately</p>
               <p>• <strong>Review & Edit:</strong> You can crop and enhance after scanning</p>
             </div>
           </DialogContent>
@@ -287,7 +285,7 @@ const TicketScanner = () => {
           <CardContent className="p-3">
             <p className="text-sm text-blue-800 text-center">
               <strong>Professional Features:</strong> Automatic edge detection, image enhancement, 
-              text recognition, and multi-image support for complete ticket documentation.
+              text recognition, and instant preview for quick ticket capture.
             </p>
           </CardContent>
         </Card>

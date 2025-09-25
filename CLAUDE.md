@@ -26,7 +26,7 @@ npm run ios:build-device && npm run ios:device-deploy    # Build + deploy to dev
 - `npm run ios:build` - Build iOS app for simulator (build-only mode)
 - `npm run ios:build-device` - **Build iOS app for physical device deployment**
 - `npm run ios:device` - **Deploy iOS app to connected physical device**
-- `npm run ios:device-deploy` - **Manual device deployment (reliable ios-deploy method)**
+- `npm run ios:device-deploy` - **Manual device deployment (reliable ios-deploy method)** this script deploys to the first connected device it finds.
 - `npm run ios:pre-build` - **Prepare project for Xcode manual build (web assets + sync + pod install)**
 - `npm run ios:check` - Check iOS development environment and available simulators
 - `npm run ios:list` - List all available iOS simulators and runtimes

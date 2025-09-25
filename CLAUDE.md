@@ -47,7 +47,7 @@ npm run ios:build-device && npm run ios:device-deploy    # Build + deploy to dev
 
 **Android Development:**
 - `npm run android` - Build and run app in Android emulator (auto-selects best AVD)
-- `npm run android:build` - **Build APK for side-loading to real devices (no emulator required)**
+- `npm run android:build` - **Build APK for side-loading to real devices (no emulator required)** use adb install -r android/app/build/outputs/apk/debug/app-debug.apk to deploy after the build.
 - `npm run android:setup` - **Apply Docutain SDK configuration (automatic in build commands)**
 - `npm run android:check` - **Check Android development environment (run this first!)**
 - `npm run android:list` - List all available Android Virtual Devices

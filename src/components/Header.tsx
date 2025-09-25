@@ -45,12 +45,10 @@ const Header = () => {
   // Removed useNativeHeaderButtons - now using NativeButton component
 
   return (
-    <header className={`bg-white border-b border-tixapp-gray shadow-sm sticky z-50 ${
-      isNativePlatform ? 'top-0' : 'top-0'
-    }`} style={isNativePlatform ? {
-      paddingTop: 'env(safe-area-inset-top)',
-      top: 0,
-    } : {}}>
+    <header className="bg-white border-b border-tixapp-gray shadow-sm sticky z-50"
+      style={{
+        top: isNativePlatform ? '25px' : '0px'
+      }}>
       <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto">
         {/* Hamburger Menu */}
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -74,7 +72,13 @@ const Header = () => {
               </Button>
             )}
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 p-0">
+          <SheetContent
+            side="left"
+            className="w-80 p-0"
+            style={{
+              top: isNativePlatform ? '25px' : '0px'
+            }}
+          >
             <SideNav onItemClick={() => setIsMenuOpen(false)} />
           </SheetContent>
         </Sheet>

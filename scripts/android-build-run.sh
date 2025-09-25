@@ -33,10 +33,43 @@ print_error() {
 check_prerequisites() {
     print_status "Checking prerequisites..."
     
-    # Check Java
+    # Check Java and set JAVA_HOME
     if ! command -v java &> /dev/null; then
         print_error "Java not found. Please install JDK 11, 17, or 21"
         exit 1
+    fi
+
+    # Set JAVA_HOME if not already set (try Android Studio's bundled JDK first)
+    if [ -z "$JAVA_HOME" ]; then
+        local java_paths=(
+            "/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+            "/opt/homebrew/opt/openjdk@17"
+            "/opt/homebrew/opt/openjdk@11"
+            "/usr/libexec/java_home -v 17"
+            "/usr/libexec/java_home -v 11"
+        )
+
+        for java_path in "${java_paths[@]}"; do
+            if [ "$java_path" = "/usr/libexec/java_home -v 17" ] || [ "$java_path" = "/usr/libexec/java_home -v 11" ]; then
+                # This is a command, not a path
+                if command -v /usr/libexec/java_home &> /dev/null; then
+                    local java_home_result=$(eval $java_path 2>/dev/null)
+                    if [ -n "$java_home_result" ] && [ -d "$java_home_result" ]; then
+                        export JAVA_HOME="$java_home_result"
+                        break
+                    fi
+                fi
+            elif [ -d "$java_path" ]; then
+                export JAVA_HOME="$java_path"
+                break
+            fi
+        done
+
+        if [ -n "$JAVA_HOME" ]; then
+            print_success "Set JAVA_HOME to: $JAVA_HOME"
+        else
+            print_warning "JAVA_HOME not set - may cause build issues"
+        fi
     fi
     
     # Check Android SDK (try common locations if ANDROID_HOME not set)

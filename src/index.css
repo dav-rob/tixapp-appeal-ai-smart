@@ -95,8 +95,16 @@
     @apply border-border;
   }
 
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
   body {
     @apply bg-background text-foreground;
+    position: relative;
+    overflow-y: auto;
   }
 
   /* Android safe area support */

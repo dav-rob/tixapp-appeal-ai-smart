@@ -147,20 +147,24 @@ build_ios_only() {
 # Function to build iOS app for device
 build_ios_device() {
     print_status "Building iOS app for physical device..."
-    
+
     # Change to iOS directory
     cd ios/App
-    
-    # Build the app for generic iOS device
-    print_status "Building iOS app for device..."
-    if xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -destination "generic/platform=iOS" build; then
+
+    # Build the app for generic iOS device with automatic code signing
+    print_status "Building iOS app for device with automatic code signing..."
+    if xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -destination "generic/platform=iOS" -allowProvisioningUpdates build CODE_SIGN_STYLE=Automatic; then
         print_success "iOS app built successfully for device"
     else
         print_error "Failed to build iOS app for device"
+        print_error "Make sure you have:"
+        print_error "  - Valid Apple Developer account configured in Xcode"
+        print_error "  - Automatic signing enabled in project settings"
+        print_error "  - Device registered in your developer account"
         cd ../..
         exit 1
     fi
-    
+
     cd ../..
 }
 

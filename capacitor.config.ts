@@ -16,7 +16,10 @@ const config: CapacitorConfig = {
     contentInset: 'automatic',
     scrollEnabled: false,
     allowsLinkPreview: false,
-    webviewUIDelegate: true
+    webviewUIDelegate: true,
+    infoPlist: {
+      NSCameraUsageDescription: 'This app uses the camera to scan parking tickets for appeal processing.'
+    }
   },
   plugins: {
     StatusBar: {

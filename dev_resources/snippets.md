@@ -12,3 +12,4 @@
 8) Share to the notes app
 9) Copy and paste from notes to logs/ios/safari-console-logs.log
 
+When looking in the logs you can look for  your bundle ID (com.tixapp.appeal), or if the app has crashed you can search for "crashed" in the logs.

@@ -13,14 +13,6 @@ This project is built with:
 
 ## Commands
 
-**Andlroid Device Testing (Side-loading)**:
-npm run android:build     # Build APK only, no emulator needed
-# Then transfer APK to device and install
-
-**IOS Device Testing (Side-loading)**:
-npm run ios:build-device && npm run ios:device-deploy    # Build + deploy to device
-# Then use Safari Web Inspector for debugging
-
 **Development:**
 - `npm run dev` - Start development server (runs on port 8080)
 - `npm run build` - Build for production

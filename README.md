@@ -1,4 +1,4 @@
-# Welcome to TixApp
+# TixApp Frontend
 
 ## What technologies are used for this project?
 
